@@ -24,7 +24,8 @@ button{font:inherit;color:inherit}
 .h-day{font-family:Display;font-size:22px;color:var(--yellow);white-space:nowrap}
 .h-day small{font-size:14px;color:var(--muted)}
 .h-chips{display:flex;gap:5px;flex:1;justify-content:flex-end;flex-wrap:wrap}
-.h-chips span{background:var(--ink3);border-radius:999px;padding:4px 9px;font-weight:800;font-size:13px;white-space:nowrap}
+.h-chips span{background:var(--ink3);border-radius:999px;padding:4px 8px;font-weight:800;font-size:12.5px;white-space:nowrap}
+@media (max-width:400px){.h-day{font-size:19px}.h-chips span{padding:3px 6px;font-size:11.5px}}
 .mute{position:absolute;right:10px;top:calc(8px + env(safe-area-inset-top));z-index:30;width:40px;height:40px;border-radius:50%;border:2px solid var(--ink3);background:var(--ink2);font-size:18px;cursor:pointer;opacity:.75}
 /* screen */
 .screen{flex:1;overflow-y:auto;overflow-x:hidden;padding:16px 16px calc(64px + env(safe-area-inset-bottom));position:relative}
@@ -225,11 +226,59 @@ input.name:focus{border-color:var(--yellow);box-shadow:0 0 0 3px var(--ink)}
 #confetti{position:absolute;inset:0;z-index:35;pointer-events:none}
 .shake{animation:shk .4s}
 @keyframes shk{0%,100%{transform:none}20%{transform:translate(-7px,3px)}40%{transform:translate(6px,-4px)}60%{transform:translate(-5px,-2px)}80%{transform:translate(4px,3px)}}
+/* fundal animat, diferit pe fiecare ediție */
+#bgfx{position:absolute;inset:0;z-index:0;pointer-events:none}
+.screen{position:relative;z-index:1}
+.hud{position:relative}
+.edition{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--ink2);border:2px solid var(--yellow);border-radius:18px;padding:12px 16px}
+.edition .en{font-family:Display;font-size:26px;color:var(--yellow);line-height:1.1}
+.edition .es{font-size:12px;color:var(--muted);font-weight:700}
+.edition .er{font-size:13.5px;line-height:1.45;max-width:36ch;margin-top:4px}
+.hist{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.hist span{background:var(--ink2);border-radius:999px;padding:4px 10px;font-weight:800;font-size:12px}
+/* twist */
+.twist{position:absolute;inset:0;z-index:28;background:#0B0B0Ef5;display:flex;flex-direction:column;justify-content:center;padding:24px 16px;overflow:hidden}
+.tw-stripes{position:absolute;left:-20%;right:-20%;height:54px;top:9%;background:repeating-linear-gradient(-45deg,var(--yellow) 0 22px,var(--ink) 22px 44px);background-size:62px 62px;transform:rotate(-6deg);animation:stripes 1s linear infinite}
+.tw-stripes.b{top:auto;bottom:7%}
+@keyframes stripes{to{background-position:62px 0}}
+.tw-in{position:relative;display:flex;flex-direction:column;gap:14px;animation:twin .5s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes twin{from{transform:scale(.6) rotate(-4deg);opacity:0}}
+.tw-title{font-family:Anton;font-size:clamp(44px,15vw,64px);white-space:nowrap;text-align:center;color:var(--yellow);letter-spacing:4px;line-height:1;animation:glitch 1.3s infinite}
+@keyframes glitch{0%,84%,100%{text-shadow:none;transform:none}87%{text-shadow:-5px 0 var(--red),5px 0 var(--blue);transform:translateX(4px)}91%{text-shadow:5px 0 var(--red),-5px 0 var(--blue);transform:translateX(-4px)}}
+.tw-name{font-size:32px;text-align:center}
+/* chat live */
+.live{position:relative;background:var(--ink2);border-radius:14px;padding:30px 12px 10px;text-align:left;height:168px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;font-size:13px;line-height:1.3}
+.live .lh{position:absolute;top:8px;left:12px;right:12px;display:flex;justify-content:space-between;font-weight:800;font-size:12px}
+.live .lh b{background:var(--red);color:#fff;border-radius:4px;padding:1px 6px;margin-right:6px}
+.live .m{animation:tin .25s both}
+.live .m b{color:var(--yellow);margin-right:5px}
+/* insigne */
+.badges{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+.bdg{display:flex;align-items:center;gap:6px;background:var(--ink2);border:2px solid var(--yellow);border-radius:999px;padding:4px 11px 4px 6px;font-weight:800;font-size:12.5px}
+.bdg.new{animation:stamp .5s both}
+.bdg i{font-style:normal;font-size:18px}
+.bdg.off{border-color:var(--ink3);opacity:.35}
+/* TikTok Dance */
+.dance canvas{width:100%;height:min(54dvh,500px);min-height:320px;border-radius:18px;background:var(--ink2);border:3px solid var(--ink3);touch-action:none}
+.lanes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.lane-btn{height:72px;border-radius:16px;border:4px solid var(--ink);font-family:system-ui,sans-serif;font-weight:900;font-size:32px;color:var(--ink);cursor:pointer;touch-action:none;box-shadow:0 6px 0 #000;transition:transform .05s,box-shadow .05s}
+.lane-btn.hit{transform:translateY(5px);box-shadow:0 1px 0 #000}
+/* Paparazzi */
+.moles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px}
+.mole{aspect-ratio:1;max-width:100%;border-radius:20px;background:var(--ink2);border:3px solid var(--ink3);overflow:hidden;cursor:pointer;touch-action:manipulation;font-size:50px;display:grid;place-items:center;padding:0;transition:background .1s}
+.mole span{transform:translateY(120%);transition:transform .12s ease-out;line-height:1}
+.mole.up span{transform:none}
+.mole.up{border-color:var(--yellow)}
+.mole.hit{background:var(--yellow)}.mole.bad{background:var(--red)}
+.quote-opt{display:flex;align-items:center;justify-content:center;gap:8px}
+.share-img{width:100%;max-width:100%;border-radius:16px;border:3px solid var(--ink3)}
+@media (prefers-reduced-motion:reduce){.tw-stripes,.tw-title{animation:none}}
 @media (prefers-reduced-motion:reduce){.screen.enter>*,.rank,.nomrow{animation:none}.buzzer-deco,.btn.pulse{animation:none}}
 </style>
 </head>
 <body>
 <div class="app" id="app">
+  <canvas id="bgfx"></canvas>
   <header class="hud off" id="hud"></header>
   <main class="screen" id="screen"></main>
   <div class="sheet hidden" id="sheet"></div>
@@ -289,15 +338,20 @@ const sfx = {
   wrong() { tone(220, .28, 'square', .1, -120); },
   pad(i) { tone([392, 523, 659, 784][i], .28, 'triangle', .18); },
   whoosh() { noise(.3, .18, 1800); },
-  boom() { tone(85, .9, 'sine', .55, -50); noise(.35, .25, 500); },
-  steal() { tone(500, .12, 'square', .1, -300); tone(350, .2, 'square', .1, -200, .12); },
+  boom() { tone(85, .9, 'sine', .55, -50); noise(.35, .25, 500); vib(120); },
+  steal() { tone(500, .12, 'square', .1, -300); tone(350, .2, 'square', .1, -200, .12); vib([40, 30, 80]); },
+  twist() { [880, 660, 880, 660, 1320].forEach((f, i) => tone(f, .13, 'square', .09, 0, i * .14)); vib([60, 40, 60, 40, 160]); },
+  kick(d = 0) { tone(150, .16, 'sine', .55, -110, d); },
+  hat(d = 0) { noise(.035, .07, 9000, d); },
+  bass(f, d = 0) { tone(f, .22, 'triangle', .16, 0, d); },
   heart() { tone(58, .11, 'sine', .45); tone(52, .1, 'sine', .35, 0, .14); },
   step() { noise(.09, .35, 260); },
   tick() { tone(1400, .025, 'square', .04); },
   win() { [523, 659, 784, 1047].forEach((f, i) => tone(f, .25, 'triangle', .16, 0, i * .11)); },
   lose() { [392, 330, 262].forEach((f, i) => tone(f, .32, 'triangle', .14, 0, i * .16)); },
-  scream() { tone(900, .7, 'sawtooth', .18, 700); noise(.7, .3, 3000); },
+  scream() { tone(900, .7, 'sawtooth', .18, 700); noise(.7, .3, 3000); vib([200, 60, 300]); },
 };
+function vib(p) { if (muted) return; try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} }
 $('#mute').textContent = muted ? '🔇' : '🔊';
 $('#mute').onclick = () => { muted = !muted; store.set('bh-muted', muted); $('#mute').textContent = muted ? '🔇' : '🔊'; };
 
@@ -372,8 +426,158 @@ const DAY_LINES = [
   'Ziua 5. Premiile devin serioase. Și furturile la fel.',
   'Ziua 6. Doar cei mai buni rămân. Sau cei mai urmăriți.',
   'Ziua 7. Ultima eliminare înainte de finală. <b>Nu greși acum.</b>',
-  '<b>FINALA.</b> Patru oameni. O frânghie. O decapotabilă.',
+  '<b>FINALA.</b> O frânghie. Un juriu. Un singur câștigător.',
 ];
+
+/* ---------- ediții: fiecare sezon e altă ediție ---------- */
+const EDITIONS = {
+  classic: { name: 'Ediția Clasică', sub: 'Vila din București', emoji: '🏠', acc: '#FFD60A', accD: '#A88A00', ink2: '#17171D', ink3: '#26262E', fx: 'dust',
+    rule: 'Regulile clasice. Fără surprize... în afară de twist-urile lui Selly.',
+    d1: 'Bine ați venit în <b>BUZZ HOUSE</b>! Prima zi. Nimeni nu pleacă acasă azi... încă.',
+    prizes: PRIZES, grand: GRAND },
+  winter: { name: 'Winter Edition', sub: 'Cabana de lângă Brașov', emoji: '❄️', acc: '#7FD3FF', accD: '#2E7EA8', ink2: '#141A22', ink3: '#222C38', fx: 'snow',
+    rule: 'Toată lumea stă la gura sobei: alianțele reușesc mai ușor (+20%), dar scandalurile strică relațiile dublu.',
+    d1: 'Bine ați venit la <b>cabană</b>! Afară sunt −12 grade. Înăuntru o să fie mult mai cald. Din alte motive.',
+    prizes: [{ n: 'Echipament complet de ski', e: '🎿', v: 900 }, { n: 'Consolă + 10 jocuri', e: '🎮', v: 1200 }, { n: '2.000€ cash', e: '💶', v: 2000 }, { n: 'Geacă de designer', e: '🧥', v: 2400 }, { n: 'Weekend în Alpi pentru doi', e: '🏔️', v: 3000 }, { n: 'Laptop de gaming', e: '💻', v: 3500 }, { n: 'Ceas cu diamante', e: '⌚', v: 6000 }],
+    grand: { n: 'SUV 4x4 nou', e: '🚙', v: 50000 } },
+  forest: { name: 'Vila din Pădure', sub: 'Ediția filmului · se ajunge doar cu barca', emoji: '🌲', acc: '#FF9F1C', accD: '#A85F00', ink2: '#19140F', ink3: '#2B231B', fx: 'embers',
+    rule: 'Chipărușul vine de DOUĂ ori (nopțile 3 și 6). Fiecare scăpare îți aduce o Carte de salvare.',
+    d1: 'Bine ați venit în <b>Vila din Pădure</b>! Barca a plecat. Semnal nu e. Ce poate să meargă prost?',
+    prizes: [{ n: 'Barca vilei', e: '🛶', v: 900 }, { n: 'Cameră de filmat 4K', e: '🎥', v: 1500 }, { n: 'Invitație VIP la premieră', e: '🎟️', v: 1200 }, { n: 'Dronă de filmare', e: '🛸', v: 2000 }, { n: '2.500€ cash', e: '💶', v: 2500 }, { n: 'Lanț de aur', e: '📿', v: 4000 }, { n: 'Rol în următorul film', e: '🎬', v: 6000 }],
+    grand: { n: '50.000€ cash', e: '💰', v: 50000 } },
+  beach: { name: 'Ediția de Vară', sub: 'Vila de la Costinești', emoji: '🏖️', acc: '#FF5FA2', accD: '#A3235E', ink2: '#1D1420', ink3: '#2F2133', fx: 'sun',
+    rule: 'E sezon de festival: urmăritorii contează dublu la votul publicului și fiecare TikTok aduce +25%.',
+    d1: 'Bine ați venit la <b>mare</b>! Soare, festival, zece influenceri și o singură decapotabilă.',
+    prizes: [{ n: 'Trotinetă electrică', e: '🛴', v: 700 }, { n: 'Abonamente VIP la festival', e: '🎟️', v: 1200 }, { n: 'Telefon de ultimă generație', e: '📱', v: 1500 }, { n: 'O zi pe iaht', e: '🛥️', v: 2500 }, { n: '3.000€ cash', e: '💶', v: 3000 }, { n: 'Vacanță în Bali', e: '🏝️', v: 4500 }, { n: 'Brățară cu diamante', e: '💎', v: 5000 }],
+    grand: { n: 'Jeep decapotabil', e: '🚗', v: 48000 } },
+};
+const ED = () => EDITIONS[(G && G.ed) || 'classic'];
+const GAME_URL = 'bardu-rgb.github.io/reels';
+function applyEd(k) {
+  const e = EDITIONS[k], r = document.documentElement.style;
+  r.setProperty('--yellow', e.acc); r.setProperty('--yellowD', e.accD); r.setProperty('--ink2', e.ink2); r.setProperty('--ink3', e.ink3);
+  setBg(e.fx);
+}
+function nextEdition(prev) { return pick(Object.keys(EDITIONS).filter(k => k !== prev)); }
+
+/* ---------- twist-urile lui Selly (3 pe sezon, din 6) ---------- */
+const TWISTS = {
+  secret: { name: 'CONCURENT SECRET', days: [2, 4], ok: () => ROSTER.some(r => !G.cast.find(c => c.id === r.id)),
+    apply() {
+      const r = pick(ROSTER.filter(r => !G.cast.find(c => c.id === r.id)));
+      const c = { ...r, hype: ri(15, 30), wins: 0, cash: 0, alive: true }; G.cast.push(c);
+      for (const o of G.cast) if (o !== c) addRel(c, o, ri(-10, 15));
+      return `Ușa se deschide și intră un concurent nou: <b>${esc(c.name)}</b> (${esc(c.tag)}). Nimeni nu știa nimic.`;
+    } },
+  double: { name: 'DUBLĂ ELIMINARE', days: [3, 6], ok: () => aliveAll().length >= 7,
+    apply() { G.double = true; return 'În seara asta nu pleacă unul. Pleacă <b>DOI</b>. Vor fi două runde de nominalizări.'; } },
+  swap: { name: 'SCHIMBUL DE PREMII', days: [3, 6], ok: () => new Set(G.prizes.filter(p => byId(p.owner).alive).map(p => p.owner)).size >= 2,
+    apply() {
+      const ps = G.prizes.filter(p => byId(p.owner).alive), owners = shuffle(ps.map(p => p.owner)), before = prizeVal(G.you);
+      ps.forEach((p, i) => { p.owner = owners[i]; });
+      const after = prizeVal(G.you);
+      return 'Selly a strâns toate premiile din casă și le-a împărțit la întâmplare! ' + (after > before ? `Tu ai câștigat la schimb: <b>${fmtE(before)} → ${fmtE(after)}</b>.` : after < before ? `Tu ai pierdut la schimb: <b>${fmtE(before)} → ${fmtE(after)}</b>.` : 'La tine nu s-a schimbat nimic.');
+    } },
+  comeback: { name: 'REVENIREA', days: [4, 6], ok: () => G.elim.length > 0,
+    apply() {
+      const c = [...G.elim].sort((a, b) => b.hype - a.hype)[0], hate = (G.grudge[c.id] || []).includes('you');
+      c.alive = true; c.hype += 15; G.elim = G.elim.filter(x => x !== c); delete G.grudge[c.id];
+      if (hate) addRel('you', c, -15);
+      return `Publicul a cerut și Selly a ascultat: <b>${esc(c.name)}</b> se întoarce în casă!${hate ? ' Și știe că tu ai votat-o/l afară.' : ''}`;
+    } },
+  sale: { name: 'IMUNITATE LA VÂNZARE', days: [2, 7], ok: () => true,
+    apply() { G.sale = true; return 'Diseară, înainte de nominalizări, îți poți <b>cumpăra imunitatea</b>. Prețul: cel mai scump premiu al tău.'; } },
+  leader: { name: 'ȘEFUL CASEI', days: [2, 7], ok: () => true,
+    apply() { G.leader = true; return 'Câștigătorul probei de azi devine <b>Șeful Casei</b> și trimite pe cineva <b>direct</b> la votul publicului.'; } },
+};
+function planTwists() {
+  const plan = {};
+  for (const k of shuffle(Object.keys(TWISTS))) {
+    if (Object.keys(plan).length >= 3) break;
+    const [a, b] = TWISTS[k].days, days = shuffle(Array.from({ length: b - a + 1 }, (_, i) => a + i)).filter(d => !plan[d]);
+    if (days.length) plan[days[0]] = k;
+  }
+  return plan;
+}
+async function twistCard(t) {
+  const desc = t.apply();
+  const o = document.createElement('div'); o.className = 'twist';
+  o.innerHTML = `<div class="tw-stripes"></div><div class="tw-stripes b"></div><div class="tw-in"><div class="tw-title">⚡ TWIST ⚡</div><h2 class="display tw-name">${t.name}</h2>${host(desc)}<button class="btn" data-act="ok">AOLEU 😳</button></div>`;
+  $('#app').appendChild(o); sfx.twist(); shake();
+  await waitAct(o); o.remove(); hud();
+}
+
+/* ---------- insigne (se păstrează între sezoane) ---------- */
+const ACH = [
+  { id: 'champ', e: '🏆', n: 'Campion', d: 'Câștigă un sezon', t: s => s.place === 1 },
+  { id: 'thief', e: '😈', n: 'Hoțul casei', d: 'Fură 2 premii într-un sezon', t: s => s.steals >= 2 },
+  { id: 'drama', e: '🔥', n: 'Regele dramei', d: 'Fă 4 scandaluri într-un sezon', t: s => s.dramas >= 4 },
+  { id: 'chip', e: '👹', n: 'Nu mi-e frică', d: 'Scapă de chipăruș', t: s => s.chip >= 1 },
+  { id: 'saved', e: '🃏', n: 'Salvat pe linie', d: 'Folosește o Carte de salvare', t: s => s.card >= 1 },
+  { id: 'wolf', e: '🐺', n: 'Lup singuratic', d: 'Câștigă fără nicio alianță', t: s => s.place === 1 && s.allies === 0 },
+  { id: 'sweep', e: '👑', n: 'De neoprit', d: 'Câștigă 3 probe într-un sezon', t: s => s.wins >= 3 },
+  { id: 'viral', e: '📈', n: 'Viral', d: 'Strânge 300K urmăritori', t: s => s.hype >= 300 },
+  { id: 'unan', e: '💛', n: 'Iubit de toți', d: 'Câștigă juriul fără niciun vot contra', t: s => s.unan },
+  { id: 'rich', e: '💰', n: 'Colecționarul', d: 'Strânge 10.000€ în premii, fără marele premiu', t: s => s.loot >= 10000 },
+  { id: 'first', e: '🥲', n: 'Măcar am încercat', d: 'Pleacă primul din casă', t: s => s.firstOut },
+  { id: 'tour', e: '🌍', n: 'Turist', d: 'Joacă toate cele 4 ediții', t: s => s.eds >= 4 },
+];
+
+/* ---------- fundalul animat ---------- */
+const BG = { type: null, ps: [], raf: 0, W: 0, H: 0 };
+function setBg(type) {
+  BG.type = type; const cv = $('#bgfx'), app = $('#app'), dpr = Math.min(2, devicePixelRatio || 1);
+  BG.W = app.clientWidth; BG.H = app.clientHeight; cv.width = BG.W * dpr; cv.height = BG.H * dpr; cv.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
+  const n = { dust: 26, snow: 60, embers: 34, sun: 16 }[type];
+  BG.ps = Array.from({ length: n }, () => newP(true));
+  if (!BG.raf) BG.raf = requestAnimationFrame(bgLoop);
+}
+function newP(anywhere) {
+  const W = BG.W, H = BG.H, t = BG.type;
+  const p = { x: rnd(0, W), y: anywhere ? rnd(0, H) : (t === 'snow' ? -10 : H + 10), ph: rnd(0, 6.28) };
+  if (t === 'snow') Object.assign(p, { r: rnd(1, 3.4), vy: rnd(18, 55), a: rnd(.35, .85) });
+  else if (t === 'embers') Object.assign(p, { r: rnd(1, 2.6), vy: -rnd(18, 50), a: rnd(.4, .9) });
+  else if (t === 'sun') Object.assign(p, { r: rnd(8, 26), vy: -rnd(6, 16), a: rnd(.05, .12), c: pick(['255,95,162', '255,214,10']) });
+  else Object.assign(p, { r: rnd(.8, 2), vy: -rnd(5, 14), a: rnd(.12, .35) });
+  return p;
+}
+let bgLast = 0;
+function bgLoop(now) {
+  BG.raf = requestAnimationFrame(bgLoop);
+  const dt = Math.min(.05, (now - (bgLast || now)) / 1000); bgLast = now;
+  const ctx = $('#bgfx').getContext('2d'), still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  ctx.clearRect(0, 0, BG.W, BG.H);
+  for (let i = 0; i < BG.ps.length; i++) {
+    const p = BG.ps[i];
+    if (!still) { p.y += p.vy * dt; p.ph += dt; p.x += Math.sin(p.ph * (BG.type === 'snow' ? 1.2 : 2)) * (BG.type === 'snow' ? 18 : 8) * dt; }
+    if (p.y > BG.H + 20 || p.y < -30) { BG.ps[i] = newP(false); continue; }
+    let a = p.a;
+    if (BG.type === 'embers') { a *= .6 + .4 * Math.sin(p.ph * 6); ctx.fillStyle = `rgba(255,${120 + Math.round(60 * Math.sin(p.ph))},40,${a})`; }
+    else if (BG.type === 'sun') ctx.fillStyle = `rgba(${p.c},${a})`;
+    else if (BG.type === 'snow') ctx.fillStyle = `rgba(235,245,255,${a})`;
+    else ctx.fillStyle = `rgba(255,214,10,${a})`;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+  }
+}
+addEventListener('resize', () => { if (BG.type) setBg(BG.type); });
+
+/* ---------- chat live pe ecranele de vot ---------- */
+const CHAT_USERS = ['ana.m03', 'xRobertx', 'vlad_fan09', 'bianca.tt', 'denis77', 'iulia_ro', 'mario.gaming', 'teo.k', 'sarah_ro', 'alex.b', 'cristi.10', 'ioana.vlog', 'daria_x', 'andrei.ro'];
+const CHAT = [n => `${n} merită să rămână 💛`, n => `echipa ${n} 🔥🔥🔥`, () => 'nu pot să cred ce văd 😭', n => `${n} e cel mai fals din casă`, () => 'SELLY CE AI FĂCUT 💀',
+  n => `${n} ❤️❤️❤️`, () => 'cine e aici de pe TikTok?', n => `am votat ${n} de 40 de ori`, () => 'regia e de 10', n => `${n} pleacă acasă azi, zic eu`,
+  () => 'cea mai bună ediție de până acum', () => '😱😱😱', n => `dacă pleacă ${n} mă dezabonez`, () => 'mama zice să mă culc dar nu pot acum'];
+function liveChat(box, people) {
+  const names = people.map(c => c.isYou ? c.name : c.sn); let v = ri(28, 64) * 1000 + ri(0, 999);
+  box.innerHTML = `<div class="lh"><span><b>LIVE</b>Buzz House</span><span id="lv"></span></div>`;
+  const tick = () => {
+    const m = document.createElement('div'); m.className = 'm';
+    m.innerHTML = `<b>${pick(CHAT_USERS)}</b>${esc(pick(CHAT)(pick(names)))}`; box.appendChild(m);
+    const ms = box.querySelectorAll('.m'); if (ms.length > 6) ms[0].remove();
+    v += ri(40, 900); const lv = box.querySelector('#lv'); if (lv) lv.textContent = '👁 ' + (v / 1000).toFixed(1).replace('.', ',') + 'K';
+  };
+  tick(); const id = setInterval(tick, DEBUG ? 1000 : 280);
+  return () => clearInterval(id);
+}
 
 /* ---------- întrebări (primul răspuns e cel corect) ---------- */
 const QUIZ = [
@@ -433,20 +637,24 @@ const threat = c => c.wins * 10 + prizeVal(c) / 300 + c.hype / 8;
 const nm = c => c.isYou ? 'TU' : c.sn;
 const who = c => c.name.toLowerCase() === 'tu' ? 'Tu' : c.name + ' (tu)';
 
-function newGame(name, arch) {
+function newGame(name, arch, ed) {
   const you = { id: 'you', isYou: true, name, sn: name, tag: ARCH[arch].name, emoji: ARCH[arch].emoji, color: '#FFD60A', arch,
     fame: ARCH[arch].fame, hype: 0, wins: 0, cash: 0, alive: true };
   const npcs = shuffle(ROSTER).slice(0, 9).map(r => ({ ...r, hype: 0, wins: 0, cash: 0, alive: true }));
-  G = { day: 0, you, cast: [you, ...npcs], rel: {}, allies: new Set(), prizes: [], elim: [], grudge: {}, news: [], offers: [],
-    fx: {}, card: 0, usedQ: new Set(), usedE: new Set(), immune: null, place: null, today: null };
+  G = { day: 0, ed, you, cast: [you, ...npcs], rel: {}, allies: new Set(), prizes: [], elim: [], grudge: {}, news: [], offers: [],
+    fx: {}, card: 0, usedQ: new Set(), usedE: new Set(), immune: null, place: null, today: null,
+    stats: { steals: 0, dramas: 0, chip: 0, card: 0 } };
   for (const a of npcs) {
     addRel(a, you, ri(-8, 12));
     for (const b of npcs) if (a.id < b.id) addRel(a, b, ri(-15, 25));
   }
-  const pool = shuffle(['quiz', 'likes', 'math', 'memory', 'rope']);
-  G.schedule = ['buzz', ...pool];
-  G.schedule.push(pick(['buzz', 'quiz', 'likes'].filter(x => x !== pool[pool.length - 1])));
+  // 7 probe din 9; frânghia apare mereu (e și finala), „Cine a zis-o?” nu în primele două zile
+  const s = shuffle([...shuffle(['buzz', 'quiz', 'math', 'memory', 'likes', 'quote', 'dance', 'mole']).slice(0, 6), 'rope']);
+  const qi = s.indexOf('quote'); if (qi > -1 && qi < 2) { [s[qi], s[4]] = [s[4], s[qi]]; }
+  G.schedule = s;
+  G.twists = planTwists();
 }
+const chipDays = () => G.ed === 'forest' ? [3, 6] : [4];
 
 /* ---------- UI de bază ---------- */
 function show(html) { screen.innerHTML = html; screen.scrollTop = 0; screen.classList.remove('enter'); void screen.offsetWidth; screen.classList.add('enter'); hud(); }
@@ -473,7 +681,7 @@ function hud() {
   if (!G || !G.you || G.day < 1) { h.classList.add('off'); return; }
   h.classList.remove('off');
   const y = G.you;
-  h.innerHTML = `<div class="h-day">${G.day > 7 ? 'FINALA' : 'ZIUA ' + G.day + '<small>/8</small>'}</div>
+  h.innerHTML = `<div class="h-day">${ED().emoji} ${G.day > 7 ? 'FINALA' : 'ZIUA ' + G.day + '<small>/8</small>'}</div>
   <div class="h-chips"><span title="Urmăritori noi">🔥 ${fmtK(y.hype)}</span><span title="Premii">💰 ${fmtE(prizeVal(y))}</span>${G.card ? `<span title="Carte de salvare">🃏 ${G.card}</span>` : ''}<span title="În casă">👥 ${aliveAll().length}</span></div>`;
 }
 async function countdown() {
@@ -497,21 +705,28 @@ function fxHtml() { const h = FX.length ? `<div class="deltas">${FX.join('')}</d
    ========================================================= */
 async function titleScreen() {
   G = null; hud();
-  const best = store.get('bh-best', null);
+  const best = store.get('bh-best', null), n = store.get('bh-n', 0) + 1, hist = store.get('bh-hist', []), ach = store.get('bh-ach', []);
+  let ek = store.get('bh-next', n === 1 ? 'classic' : null);
+  if (!EDITIONS[ek]) { ek = nextEdition(null); store.set('bh-next', ek); }
+  const e = EDITIONS[ek];
+  applyEd(ek);
   show(`<div class="title">
     <div class="kicker">FAN GAME NEOFICIAL</div>
     <div class="buzzer-deco"></div>
-    <div class="logo"><b>BUZZ</b><b>HOUSE</b><em>SEZONUL TĂU</em></div>
-    <p class="pitch">10 influenceri. 8 zile. Premii furate în fiecare zi.<br>Un singur om pleacă acasă cu <b class="y">decapotabila</b>.</p>
+    <div class="logo"><b>BUZZ</b><b>HOUSE</b><em>SEZONUL ${n}</em></div>
+    <div class="edition"><div class="label">Ediția sezonului ${n}</div><div class="en">${e.emoji} ${e.name}</div><div class="es">${e.sub}</div><div class="er">${e.rule}</div><div class="small muted" style="margin-top:4px">Marele premiu: <b class="y">${e.grand.e} ${e.grand.n}</b></div></div>
     <button class="btn pulse" data-act="go">INTRĂ ÎN CASĂ</button>
-    ${best ? `<div class="small muted">Recordul tău: <b class="y">${best.score}</b> puncte · ${esc(best.title)}</div>` : ''}
-    <p class="disc">Joc făcut de fani, pentru fani. Nu e afiliat cu Selly, Buzz House sau producătorii show-ului.<br>Toate întâmplările din joc sunt inventate.</p>
+    ${best ? `<div class="small muted">Record: <b class="y">${best.score}</b> puncte · Insigne: <b class="y">${ach.length}/${ACH.length}</b></div>` : ''}
+    ${hist.length ? `<div class="hist">${hist.slice(-5).reverse().map(h => `<span>${EDITIONS[h.ed] ? EDITIONS[h.ed].emoji : ''} S${h.n} · #${h.place}</span>`).join('')}</div>` : ''}
+    <p class="disc">Joc făcut de fani, pentru fani. Nu e afiliat cu Selly, Buzz House sau producătorii show-ului.<br>Toate întâmplările din joc sunt inventate. Fiecare sezon are altă ediție, alte probe și alte twist-uri.</p>
   </div>`);
   await waitAct(); actx();
+  return ek;
 }
 
-async function setupScreen() {
-  let arch = 'gamer';
+async function setupScreen(ed) {
+  let arch = store.get('bh-arch', 'gamer');
+  if (!ARCH[arch]) arch = 'gamer';
   const last = store.get('bh-name', '');
   show(`<div class="stack">
     <div class="label">Profilul tău de creator</div>
@@ -525,21 +740,23 @@ async function setupScreen() {
     const r = await waitAct();
     if (r.act === 'arch') { arch = r.id; screen.querySelectorAll('#arch button').forEach(b => b.classList.toggle('on', b.dataset.id === arch)); continue; }
     const name = ($('#nm').value || '').trim().replace(/^@/, '') || 'Tu';
-    store.set('bh-name', name);
-    newGame(name, arch); return;
+    store.set('bh-name', name); store.set('bh-arch', arch);
+    newGame(name, arch, ed); return;
   }
 }
 
 async function introScreen() {
   const npcs = G.cast.filter(c => !c.isYou);
   show(`<div class="stack">
-    ${host(`Salut, <b>${esc(G.you.name)}</b>! Ești al 10-lea concurent. Ăștia sunt colegii tăi de casă:`)}
+    ${host(`Salut, <b>${esc(G.you.name)}</b>! Bine ai venit la <b>${ED().name}</b>. Ești al 10-lea concurent. Ăștia sunt colegii tăi de casă:`)}
     <div class="grid3">${npcs.map(c => `<div class="tile">${av(c)}<div class="nm">${esc(c.sn)}</div><div class="tg">${esc(c.tag)}</div></div>`).join('')}</div>
     <div class="panel stack small" style="line-height:1.5">
       <div><b class="y">☀️ Dimineața</b> ai 3 acțiuni: vorbești, faci TikTok-uri, propui alianțe sau începi scandaluri.</div>
       <div><b class="y">🎯 Proba zilei</b>: câștigătorul ia <b>imunitate</b> și alege: premiul zilei sau <b>FURĂ</b> premiul altcuiva.</div>
       <div><b class="y">🌙 Seara</b>: nominalizări. Cei mai votați doi ajung la <b>votul publicului</b>. Urmăritorii 🔥 te salvează.</div>
       <div><b class="y">🏁 Finala</b>: Frânghia. Ultimii doi ajung în fața <b>juriului</b> format din cei eliminați.</div>
+      <div><b class="y">⚡ Twist-uri</b>: Selly are 3 surprize pregătite. Nu știi în ce zi vin.</div>
+      <div><b class="y">${ED().emoji} Regula ediției</b>: ${ED().rule}</div>
       <div class="muted">Scandalul îți aduce urmăritori. Dar dușmanii te nominalizează, iar juriul nu uită.</div>
     </div>
     <button class="btn" data-act="go">ÎNCEPE ZIUA 1</button>
@@ -549,11 +766,11 @@ async function introScreen() {
 
 async function dayCard() {
   const fin = G.day === 8;
-  const prize = fin ? GRAND : PRIZES[G.day - 1];
+  const prize = fin ? ED().grand : G.today;
   show(`<div class="stack center" style="padding-top:20px">
     <div class="label">${fin ? 'Ultima zi' : aliveAll().length + ' concurenți în casă'}</div>
     <h1 class="display" style="font-size:88px;color:var(--yellow);-webkit-text-stroke:8px var(--ink);paint-order:stroke fill;text-shadow:0 7px 0 var(--red)">${fin ? 'FINALA' : 'ZIUA ' + G.day}</h1>
-    ${host(DAY_LINES[G.day - 1])}
+    ${host(G.day === 1 ? ED().d1 : DAY_LINES[G.day - 1])}
     <div class="prize"><div class="e">${prize.e}</div><div style="text-align:left"><div class="label">${fin ? 'Marele premiu' : 'Premiul zilei'}</div><div class="n">${prize.n}</div><div class="small muted">${fmtE(prize.v)}</div></div></div>
     <button class="btn" data-act="go">${fin ? 'ULTIMA DIMINEAȚĂ' : 'BUNĂ DIMINEAȚA ☀️'}</button>
   </div>`);
@@ -598,7 +815,7 @@ async function morning(maxAp = 3) {
 function dots(v) { return `<div class="dots">${Array.from({ length: 10 }, (_, i) => `<i class="${i < v ? 'on' : ''}"></i>`).join('')}</div>`; }
 async function actionSheet(c) {
   const r = rel(G.you, c), al = allied(G.you, c), can = G.ap > 0;
-  const chance = Math.round(clamp((r + 25) / 80 + c.soc.loyal * .02, .05, .95) * 100);
+  const chance = Math.round(allyChance(c) * 100);
   openSheet(`<div class="stack">
     <div class="row">${av(c, 'lg')}<div class="grow"><h3 class="display" style="font-size:26px">${esc(c.name)}</h3><div class="small muted">${esc(c.tag)} ${al ? '· 🤝 aliat' : ''}</div><div style="margin-top:6px">${relBar(r)}</div><div class="small muted" style="margin-top:3px">Relația voastră: <b>${r > 0 ? '+' : ''}${r}</b></div></div></div>
     <div class="say">„${esc(pick(c.lines))}”</div>
@@ -616,18 +833,19 @@ async function actionSheet(c) {
   if (res.act === 'close') { await closeSheet(); return null; }
   return res.act;
 }
+function allyChance(c) { return clamp((rel(G.you, c) + 25) / 80 + c.soc.loyal * .02 + (G.ed === 'winter' ? .2 : 0), .05, .95); }
 async function doSocial(c, a) {
   let line = '';
   if (a === 'chat') { dRel(c, ri(8, 14)); line = pick(GEN.chat); }
   else if (a === 'tiktok') {
     if (rel(G.you, c) < -30) { dRel(c, -3); line = pick(GEN.tiktokNo); }
-    else { dHype(6 + c.fame / 140 + ri(0, 6)); dRel(c, ri(3, 7)); line = pick(GEN.tiktok); c.hype += 4; }
+    else { dHype((6 + c.fame / 140 + ri(0, 6)) * (G.ed === 'beach' ? 1.25 : 1)); dRel(c, ri(3, 7)); line = pick(GEN.tiktok); c.hype += 4; }
   } else if (a === 'ally') {
-    const ch = clamp((rel(G.you, c) + 25) / 80 + c.soc.loyal * .02, .05, .95);
-    if (Math.random() < ch) { G.allies.add(rk('you', c.id)); dRel(c, 10); line = pick(GEN.allyYes); sfx.ding(); }
+    if (Math.random() < allyChance(c)) { G.allies.add(rk('you', c.id)); dRel(c, 10); line = pick(GEN.allyYes); sfx.ding(); }
     else { dRel(c, -6); line = pick(GEN.allyNo); sfx.wrong(); }
   } else if (a === 'drama') {
-    dHype(18 + c.soc.drama * 1.5 + ri(0, 8)); dRel(c, -ri(25, 35)); c.hype += 8;
+    G.stats.dramas++;
+    dHype(18 + c.soc.drama * 1.5 + ri(0, 8)); dRel(c, -ri(25, 35) * (G.ed === 'winter' ? 2 : 1)); c.hype += 8;
     if (allied(G.you, c)) { G.allies.delete(rk('you', c.id)); FX.push('<span class="d down">💔 Alianță ruptă</span>'); }
     for (const o of aliveNPC()) if (o !== c && allied(o, c)) addRel('you', o, -8);
     line = pick(GEN.drama); sfx.boom(); shake();
@@ -715,12 +933,32 @@ const EVENTS = [
   { id: 'pushups', t: x => `💪 <b>${x.a.sn}</b> te provoacă la flotări în fața camerelor.`,
     c: [{ l: () => 'Accepți', f: x => { if (Math.random() < (perk('sport') ? .85 : .45)) { dHype(14); dRel(x.a, 6); return `Ai câștigat cu 31 la 24. ${x.a.sn} cere revanșă.`; } dHype(8); return 'Ai pierdut, dar a fost amuzant.'; } },
       { l: () => 'Refuzi', f: x => { dRel(x.a, -4); return `${x.a.sn} face „cot-cot” toată ziua.`; } }] },
+  // evenimente care apar doar într-o anumită ediție
+  { id: 'snow', ed: 'winter', t: x => `☃️ Bătaie cu zăpadă în curte! <b>${x.a.sn}</b> te-a nimerit fix în ceafă.`,
+    c: [{ l: () => 'Contraataci cu un bulgăre uriaș', f: x => { dHype(12); dRel(x.a, 6); return 'Ați ajuns amândoi în zăpadă până la brâu. Clipul e superb.'; } },
+      { l: () => 'Intri în casă, supărat(ă)', f: x => { dRel(x.a, -8); dFx('rested'); return 'Stai la căldură. Măcar te odihnești.'; } }] },
+  { id: 'sauna', ed: 'winter', t: x => `🧖 <b>${x.a.sn}</b> și <b>${x.b.sn}</b> te cheamă la saună. E loc doar pentru încă unul.`,
+    c: [{ l: () => 'Mergi cu ei', f: x => { dRel(x.a, 10); dRel(x.b, 10); return 'Secretele ies la suprafață la 90 de grade.'; } },
+      { l: () => 'Rămâi să te pregătești de probă', f: () => { dFx('rested'); return 'Ai repetat. Te simți pregătit(ă).'; } }] },
+  { id: 'boat', ed: 'forest', t: () => '🛶 Barca e legată la mal. Cineva a lăsat cheia în contact.',
+    c: [{ l: () => 'Faci o tură pe lac la apus', f: () => { dHype(16); return 'Cele mai frumoase cadre din sezon. Și ai lăsat barca fără benzină.'; } },
+      { l: () => 'Ascunzi cheia „ca să nu plece nimeni”', f: () => { dRelAll(-3); dHype(6); return 'Toată casa caută cheia. Tu ai cea mai nevinovată față.'; } }] },
+  { id: 'woods', ed: 'forest', t: x => `🌲 <b>${x.a.sn}</b> jură că a văzut ceva cu coarne printre copaci.`,
+    c: [{ l: () => 'Mergi cu lanterna să vezi', f: x => { dHype(14); dRel(x.a, 8); return 'N-ați găsit nimic. Doar niște urme mari în noroi...'; } },
+      { l: () => 'Râzi de asta pe live', f: x => { dHype(10); dRel(x.a, -14); return `Publicul râde. ${x.a.sn} nu.`; } }] },
+  { id: 'festival', ed: 'beach', t: () => '🎶 Selly vă dă bilete la festival pentru o seară. Proba e mâine dimineață.',
+    c: [{ l: () => 'Mergi și dansezi până dimineața', f: () => { dHype(22); dFx('tired'); return 'Ai apărut pe ecranele de lângă scenă. Dar ochii nu ți se mai deschid.'; } },
+      { l: () => 'Rămâi în vilă', f: () => { dFx('rested'); dRelAll(2); return 'Vila e liniștită, tu ești odihnit(ă).'; } }] },
+  { id: 'sunburn', ed: 'beach', t: x => `☀️ <b>${x.a.sn}</b> a adormit la soare și acum e roșu ca un rac.`,
+    c: [{ l: () => 'Aduci cremă și ceai rece', f: x => { dRel(x.a, 16); return `${x.a.sn} te consideră salvarea zilei.`; } },
+      { l: () => 'Faci un TikTok „ghicește cine e racul”', f: x => { dHype(18); dRel(x.a, -16); return 'Milioane de vizualizări. Și un dușman nou.'; } }] },
 ];
 async function eventPhase() {
   const npcs = aliveNPC(); if (npcs.length < 2) return;
   const x = {}; [x.a, x.b] = shuffle(npcs);
-  const pool = EVENTS.filter(e => !G.usedE.has(e.id) && (!e.ok || e.ok(x)));
-  const e = pick(pool.length ? pool : EVENTS.filter(e => !e.ok || e.ok(x)));
+  const fits = e => (!e.ed || e.ed === G.ed) && (!e.ok || e.ok(x));
+  const pool = EVENTS.filter(e => !G.usedE.has(e.id) && fits(e)), own = pool.filter(e => e.ed);
+  const e = own.length && Math.random() < .45 ? pick(own) : pick(pool.length ? pool : EVENTS.filter(fits));
   G.usedE.add(e.id); if (e.pre) e.pre(x);
   show(`<div class="stack">
     <div class="label">⚡ Între timp, în casă...</div>
@@ -747,11 +985,17 @@ const GAMES = {
     npc: c => Math.max(5, Math.round(14 + c.st.refl * 2.5 + gauss() * 5)), fmt: s => s + ' ❤️', run: gameLikes, dbg: () => ri(25, 40) },
   rope: { name: 'FRÂNGHIA', icon: '🪢', desc: 'Proba de anduranță. <b>Ține apăsat</b> ca să urci, dă drumul ca să cobori. Ține mâna în <b class="g">zona verde</b>, altfel îți scade puterea. Ultimul agățat câștigă.',
     npc: c => Math.max(6, 14 + c.st.endu * 3.4 + gauss() * 6), fmt: s => s.toFixed(1) + 's', run: gameRope, dbg: () => rnd(25, 55) },
+  quote: { name: 'CINE A ZIS-O?', icon: '💬', desc: '6 replici auzite prin casă. Ghicește cine a zis-o. Ai fost atent dimineața când ai vorbit cu ei?',
+    npc: c => { let s = 0; for (let i = 0; i < 6; i++) if (Math.random() < .3 + c.st.mem * .06) s += 100 + ri(8, 44); return s; }, fmt: s => Math.round(s) + ' p', run: gameQuote, dbg: () => ri(2, 6) * 120 },
+  dance: { name: 'TIKTOK DANCE', icon: '🕺', desc: 'Săgețile coboară pe ritm. Apasă culoarea potrivită când ajung pe linie. <b>PERFECT</b> = 3 puncte, <b>BINE</b> = 1. Pe calculator: tastele D F J K.',
+    npc: c => Math.max(10, Math.round(36 * (.9 + c.st.refl * .17) + gauss() * 6)), fmt: s => s + ' p', run: gameDance, dbg: () => ri(55, 95) },
+  mole: { name: 'PAPARAZZI', icon: '📸', desc: 'Paparazzii apar la ferestrele vilei. Prinde-i 📸 (+1) și pe Selly ⭐ (+3), dar nu-ți alunga fanii 🙋 (−2). 20 de secunde.',
+    npc: c => Math.max(5, Math.round(10 + c.st.refl * 2.2 + gauss() * 4)), fmt: s => s + ' 📸', run: gameMole, dbg: () => ri(18, 34) },
 };
 
 async function challengePhase() {
   const key = G.schedule[G.day - 1], g = GAMES[key];
-  G.today = G.today || { ...PRIZES[G.day - 1] };
+  G.today = G.today || { ...ED().prizes[G.day - 1] };
   show(`<div class="stack center">
     <div class="label">🎯 Proba zilei</div>
     <div class="chal-icon">${g.icon}</div>
@@ -772,7 +1016,7 @@ async function challengePhase() {
   if (G.fx.tired) { mine = g.low ? mine * 1.08 : mine * .92; note = '🥱 −8% obosit'; }
   delete G.fx.rested; delete G.fx.tired;
   const all = [{ c: G.you, s: mine }, ...field].sort((a, b) => g.low ? a.s - b.s : b.s - a.s);
-  const winner = all[0].c; winner.wins++;
+  const winner = all[0].c; winner.wins++; G.dayWinner = winner.id;
   let immune = winner;
   if (winner.isYou && G.fx.noImm) immune = all[1].c;
   delete G.fx.noImm;
@@ -781,6 +1025,7 @@ async function challengePhase() {
   show(`<div class="stack">
     <div class="label">🎯 ${g.name} · rezultate</div>
     <div>${all.map((x, i) => `<div class="rank ${x.c.isYou ? 'you' : ''}" style="animation-delay:${(all.length - i) * 0.09}s"><span class="pos">${i === 0 ? '👑' : i + 1}</span>${av(x.c, 'sm')}<div class="nm">${esc(x.c.isYou ? who(x.c) : x.c.name)}${x.c === immune && G.immune ? '<small>🛡️ imunitate</small>' : ''}${x.c.isYou && note ? `<small>${note}</small>` : ''}</div><span class="sc">${g.fmt(x.s)}</span></div>`).join('')}</div>
+    ${G.leader ? `<div class="panel small center">👑 <b>${esc(nm(winner))}</b> ${winner.isYou ? 'ești' : 'e'} Șeful Casei în seara asta.</div>` : ''}
     <button class="btn" data-act="go">${winner.isYou ? 'AI CÂȘTIGAT! ALEGE PREMIUL →' : 'MAI DEPARTE →'}</button>
   </div>`);
   if (myPos === 1) { sfx.win(); confetti(); } else if (myPos <= 3) sfx.ding(); else sfx.lose();
@@ -808,7 +1053,7 @@ async function prizePhase(w) {
       give(todayObj, v); G.prizes.push(todayObj); give(p, w);
       addRel('you', v, -30); for (const o of aliveNPC()) if (allied(o, v)) addRel('you', o, -8);
       if (allied('you', v)) G.allies.delete(rk('you', v.id));
-      dHype(15); fxHtml(); sfx.steal(); shake();
+      dHype(15); fxHtml(); sfx.steal(); shake(); G.stats.steals++;
       toast(`😈 Ai furat ${p.e} de la ${esc(v.sn)}!`);
     }
     await sleep(900);
@@ -842,7 +1087,7 @@ async function prizePhase(w) {
 
 /* ---------- nominalizări + votul publicului ---------- */
 function npcNominate(n, immuneId, preview = false) {
-  const opts = aliveAll().filter(c => c !== n && c.id !== immuneId);
+  const opts = aliveAll().filter(c => c !== n && c.id !== immuneId && !(c.isYou && G.youImm));
   let best = null, bs = -1e9;
   for (const c of opts) {
     let s = -rel(n, c) + (n.soc.strat / 10) * threat(c) + (preview ? 0 : gauss() * 8);
@@ -851,12 +1096,27 @@ function npcNominate(n, immuneId, preview = false) {
   }
   return best;
 }
-async function elimination() {
-  const youImm = G.immune === 'you';
+async function elimination(round2 = false) {
+  // twist: imunitatea se cumpără cu cel mai scump premiu
+  if (G.sale && !round2 && G.immune !== 'you') {
+    const best = G.prizes.filter(p => p.owner === 'you').sort((a, b) => b.v - a.v)[0];
+    if (best) {
+      show(`<div class="stack center"><div class="label">⚡ Imunitate la vânzare</div><div style="font-size:64px">${best.e}</div>
+        ${host(`Îmi dai <b>${esc(best.n)}</b> (${fmtE(best.v)}) și în seara asta nimeni nu te poate nominaliza. Batem palma?`)}
+        <button class="btn green" data-act="buy">DAU PREMIUL, IAU IMUNITATEA</button><button class="btn paper" data-act="no">Îmi păstrez premiul</button></div>`);
+      const u = await waitAct();
+      if (u.act === 'buy') { G.prizes.splice(G.prizes.indexOf(best), 1); G.youImm = true; sfx.ding(); toast('🛡️ Ai imunitate în seara asta'); }
+    }
+    G.sale = false;
+  }
+  const youImm = G.immune === 'you' || G.youImm;
+  const L = G.leader && !round2 && G.dayWinner ? byId(G.dayWinner) : null;
   const elig = aliveNPC().filter(c => c.id !== G.immune);
   show(`<div class="stack">
-    <div class="label">🌙 Seara nominalizărilor</div>
-    ${host(youImm ? 'Ai imunitate, deci ești în siguranță. Dar votezi. <b>Pe cine nominalizezi?</b>' : 'Fiecare nominalizează pe cineva. Cei mai votați doi ajung la votul publicului. <b>Pe cine nominalizezi?</b>')}
+    <div class="label">🌙 ${round2 ? 'A doua eliminare' : 'Seara nominalizărilor'}</div>
+    ${round2 ? host('Nu ne-am terminat. <b>Încă cineva</b> pleacă în seara asta. Votați din nou.') : ''}
+    ${L && L.isYou ? host('Ești <b>Șeful Casei</b>: cel pe care îl alegi merge <b>direct</b> la votul publicului.') : ''}
+    ${!round2 && !(L && L.isYou) ? host(youImm ? 'Ai imunitate, deci ești în siguranță. Dar votezi. <b>Pe cine nominalizezi?</b>' : 'Fiecare nominalizează pe cineva. Cei mai votați doi ajung la votul publicului. <b>Pe cine nominalizezi?</b>') : ''}
     <div class="grid3">${elig.map(c => `<div class="tile" data-act="nom" data-id="${c.id}">${allied(G.you, c) ? '<span class="badge">🤝</span>' : ''}${av(c)}<div class="nm">${esc(c.sn)}</div>${relBar(rel(G.you, c))}</div>`).join('')}</div>
     ${G.immune && G.immune !== 'you' ? `<div class="small muted center">🛡️ ${esc(byId(G.immune).sn)} are imunitate.</div>` : ''}
   </div>`);
@@ -871,10 +1131,12 @@ async function elimination() {
   }
   const tally = {}; for (const x of votes) tally[x.t.id] = (tally[x.t.id] || 0) + 1;
   const ranked = Object.keys(tally).map(byId).sort((a, b) => tally[b.id] - tally[a.id] || a.hype - b.hype || Math.random() - .5);
-  let noms = ranked.slice(0, 2);
-  if (noms.length < 2) noms.push(shuffle(aliveAll().filter(c => c.id !== G.immune && !noms.includes(c)))[0]);
+  const lp = L && L.alive ? (L.isYou ? myT : npcNominate(L, G.immune, true)) : null;
+  let noms = lp ? [lp, ranked.find(c => c !== lp)].filter(Boolean) : ranked.slice(0, 2);
+  if (noms.length < 2) noms.push(shuffle(aliveAll().filter(c => c.id !== G.immune && !(c.isYou && G.youImm) && !noms.includes(c)))[0]);
   show(`<div class="stack">
     <div class="label">🌙 Voturile</div>
+    ${lp ? `<div class="panel small">👑 Șeful Casei (${esc(nm(L))}) l-a trimis direct la vot pe <b>${esc(nm(lp))}</b>.</div>` : ''}
     <div>${votes.map((x, i) => `<div class="nomrow" style="animation-delay:${i * .18}s">${av(x.v, 'sm')}<span>${esc(x.v.isYou ? 'Tu' : x.v.sn)}</span><span class="arr">→</span>${av(x.t, 'sm')}<span>${esc(nm(x.t))}</span></div>`).join('')}</div>
     <div class="tally" style="animation-delay:${votes.length * .18}s">${ranked.map(c => `<div>${av(c, 'sm')}${tally[c.id]}</div>`).join('')}</div>
     <button class="btn" data-act="go" style="animation-delay:${votes.length * .18 + .2}s">NOMINALIZAȚII →</button>
@@ -887,12 +1149,12 @@ async function elimination() {
       <button class="btn green" data-act="use">FOLOSESC CARTEA 🃏</button><button class="btn paper" data-act="no">Risc la votul publicului</button></div>`);
     const u = await waitAct();
     if (u.act === 'use') {
-      G.card--; const next = ranked.find(c => !noms.includes(c)) || shuffle(aliveNPC().filter(c => c.id !== G.immune && !noms.includes(c)))[0];
+      G.card--; G.stats.card++; const next = ranked.find(c => !noms.includes(c) && !c.isYou) || shuffle(aliveNPC().filter(c => c.id !== G.immune && !noms.includes(c)))[0];
       noms = noms.map(c => c.isYou ? next : c); sfx.ding(); toast('🃏 Te-ai salvat!');
     }
   }
   const [A, B] = noms;
-  const pv = c => (c.hype + c.fame * .03 + 30) * (c.isYou && perk('comic') ? 1.15 : 1);
+  const pv = c => (c.hype * (G.ed === 'beach' ? 2 : 1) + c.fame * .03 + 30) * (c.isYou && perk('comic') ? 1.15 : 1);
   let shareA = clamp(pv(A) / (pv(A) + pv(B)) + gauss() * .06, .08, .92);
   const loser = shareA < .5 ? A : B;
   show(`<div class="stack center">
@@ -901,9 +1163,11 @@ async function elimination() {
     <div class="vs"><div class="vs-side" id="sa">${av(A, 'xl')}<div>${esc(A.isYou ? who(A) : A.sn)}</div><div class="pct" id="pa">50%</div></div><div class="vs-mid">VS</div>
       <div class="vs-side" id="sb">${av(B, 'xl')}<div>${esc(B.isYou ? who(B) : B.sn)}</div><div class="pct" id="pb">50%</div></div></div>
     <div class="vbar"><i id="ba" style="width:50%;background:${A.color}"></i><i id="bb" style="width:50%;background:${B.color}"></i></div>
+    <div class="live" id="live"></div>
     <button class="btn" data-act="go" id="vgo" style="visibility:hidden">CONTINUĂ</button>
   </div>`);
-  const T = DEBUG ? 50 : 3200, t0 = performance.now();
+  const stopChat = liveChat($('#live'), [A, B]);
+  const T = DEBUG ? 50 : 4200, t0 = performance.now();
   await new Promise(res => {
     let lastBeat = 0;
     const f = () => {
@@ -923,8 +1187,8 @@ async function elimination() {
   $(lside).querySelector('.av').classList.add('out');
   sfx.boom(); shake();
   $('#vgo').style.visibility = 'visible';
-  if (loser.isYou) { G.place = aliveAll().length; $('#vgo').textContent = 'SFÂRȘITUL DRUMULUI…'; }
-  await waitAct();
+  if (loser.isYou) { G.place = aliveAll().length; G.firstOut = G.elim.length === 0; $('#vgo').textContent = 'SFÂRȘITUL DRUMULUI…'; }
+  await waitAct(); stopChat();
   if (loser.isYou) { G.you.alive = false; return 'you'; }
   loser.alive = false; G.elim.push(loser);
   G.grudge[loser.id] = votes.filter(x => x.t === loser).map(x => x.v.id);
@@ -966,16 +1230,17 @@ function simHouse() {
 /* ---------- Noaptea Chipărușului ---------- */
 async function chipNight() {
   show(`<div class="stack center">
-    <div class="label r">🌑 Noaptea 4 · eveniment special</div>
+    <div class="label r">🌑 Noaptea ${G.day} · eveniment special</div>
     <h1 class="impact" style="font-size:44px;color:var(--red)">NOAPTEA<br>CHIPĂRUȘULUI</h1>
-    ${host('Am angajat un tip costumat în chipăruș să vă sperie la noapte. Doar că... <b>l-am găsit legat în debara</b>. Atunci cine e pe hol?')}
+    ${host(G.chipSeen ? '<b>S-a întors.</b> Ușa de la intrare e iar deschisă și pe hol se aud pași. De data asta e mai rapid.' : 'Am angajat un tip costumat în chipăruș să vă sperie la noapte. Doar că... <b>l-am găsit legat în debara</b>. Atunci cine e pe hol?')}
     <div class="panel" style="text-align:left;line-height:1.5"><b>Ține apăsat</b> ca să-ți ții respirația când se apropie. Nu ai aer la nesfârșit: respiră când pleacă. <b>Rezistă 25 de secunde.</b><br><span class="small muted">Dacă scapi: +60K 🔥 și o 🃏 Carte de salvare.</span></div>
     <button class="btn red" data-act="go">STING LUMINA</button>
   </div>`);
   await waitAct();
-  const ok = DEBUG ? Math.random() < .6 : await nightGame();
+  const hard = !!G.chipSeen; G.chipSeen = true;
+  const ok = DEBUG ? Math.random() < .6 : await nightGame(hard);
   if (ok) {
-    G.card++; dHype(60);
+    G.card++; dHype(60); G.stats.chip++;
     show(`<div class="stack center"><div class="label g">🌅 Dimineața</div><div style="font-size:80px">😮‍💨</div><h2 class="display" style="font-size:32px">Ai supraviețuit nopții!</h2>${host('Ești singurul care n-a țipat. Ai câștigat o <b>Carte de salvare</b>.')}${fxHtml()}<div class="deltas"><span class="d up">+1 🃏</span></div><button class="btn" data-act="go">CONTINUĂ</button></div>`);
     sfx.win();
   } else {
@@ -984,7 +1249,7 @@ async function chipNight() {
   }
   await waitAct();
 }
-function nightGame() {
+function nightGame(hard = false) {
   return new Promise(resolve => {
     const wrap = document.createElement('div'); wrap.className = 'night';
     wrap.innerHTML = `<canvas id="nc"></canvas><div class="hud2"><span id="ntm">25.0</span><span id="nst"></span></div>
@@ -994,7 +1259,7 @@ function nightGame() {
     const W = cv.clientWidth, H = cv.clientHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.scale(dpr, dpr);
     // programul apropierilor: [start, urcare, stat, coborâre, vârf]
     const plan = []; let t = rnd(2, 3);
-    while (t < 23) { const fake = plan.length > 0 && Math.random() < .25; plan.push({ s: t, up: rnd(1, 1.5), hold: fake ? 0 : rnd(1.2, 2.4), down: rnd(.8, 1.2), peak: fake ? .42 : 1 }); t += rnd(4.6, 6.4); }
+    while (t < 23) { const fake = plan.length > 0 && Math.random() < .25; plan.push({ s: t, up: rnd(1, 1.5) * (hard ? .65 : 1), hold: fake ? 0 : rnd(1.2, 2.4), down: rnd(.8, 1.2), peak: fake ? .42 : 1 }); t += rnd(4.6, 6.4) * (hard ? .85 : 1); }
     const prox = tt => { let p = 0; for (const a of plan) { const d = tt - a.s; if (d < 0) continue; let v = 0; if (d < a.up) v = d / a.up; else if (d < a.up + a.hold) v = 1; else if (d < a.up + a.hold + a.down) v = 1 - (d - a.up - a.hold) / a.down; v *= a.peak; p = Math.max(p, v); } return p; };
     let hold = false, air = 1, gasp = 0, danger = 0, el = 0, last = performance.now(), beat = 0, step = 0, done = false;
     const down = e => { e.preventDefault(); hold = true; }, up = () => { hold = false; };
@@ -1055,7 +1320,7 @@ async function finale() {
   show(`<div class="stack center">
     <div class="label">🏁 Proba finală</div><div class="chal-icon">🪢</div>
     <h1 class="impact" style="font-size:46px;color:var(--yellow)">FRÂNGHIA</h1>
-    ${host('Toți patru vă agățați de frânghie. <b>Primii doi care cad, pleacă.</b> Ultimii doi ajung în fața juriului.')}
+    ${host(`Toți ${aliveAll().length} vă agățați de frânghie. <b>${aliveAll().length - 2 === 1 ? 'Primul care cade, pleacă' : 'Primii ' + (aliveAll().length - 2) + ' care cad, pleacă'}.</b> Ultimii doi ajung în fața juriului.`)}
     <div class="panel" style="text-align:left;line-height:1.5">${g.desc}</div>
     <button class="btn" data-act="go">LA FRÂNGHIE</button></div>`);
   await waitAct();
@@ -1079,8 +1344,10 @@ async function finale() {
     ${host(`${jury.length} foști colegi votează câștigătorul. Fiecare vot e secret... până acum.`)}
     <div class="vs"><div class="vs-side">${av(F1, 'xl')}<div>${esc(F1.isYou ? who(F1) : F1.sn)}</div><div class="pct" id="c1">0</div></div><div class="vs-mid">VS</div><div class="vs-side">${av(F2, 'xl')}<div>${esc(F2.isYou ? who(F2) : F2.sn)}</div><div class="pct" id="c2">0</div></div></div>
     <div id="ballot" style="min-height:70px"></div>
+    <div class="live" id="live"></div>
     <button class="btn" data-act="go" id="jgo" style="visibility:hidden">REZULTATUL</button>
   </div>`);
+  const stopChat = liveChat($('#live'), [F1, F2]);
   let c1 = 0, c2 = 0;
   for (const b of shuffle(ballots)) {
     await sleep(1150);
@@ -1093,33 +1360,98 @@ async function finale() {
   if (c1 !== c2) W = c1 > c2 ? F1 : F2;
   else { W = (F1.hype + F1.fame * .03) >= (F2.hype + F2.fame * .03) ? F1 : F2; $('#ballot').innerHTML = '<div class="y" style="font-weight:800">EGALITATE! Decide publicul... 📲</div>'; await sleep(1600); }
   $('#jgo').style.visibility = 'visible';
-  await waitAct();
+  await waitAct(); stopChat();
   G.place = W.isYou ? 1 : 2;
   G.winner = W;
-  if (W.isYou) G.prizes.push({ ...GRAND, owner: 'you' });
+  G.unan = W.isYou && (W === F1 ? c2 : c1) === 0;
+  if (W.isYou) G.prizes.push({ ...ED().grand, owner: 'you', grand: true });
 }
 
 /* ---------- final de joc ---------- */
 async function endScreen() {
   hud();
-  const y = G.you, p = G.place, val = prizeVal(y);
-  const pts = Math.round(({ 1: 5000, 2: 3000, 3: 2000, 4: 1500 }[p] || (11 - p) * 150) + val / 10 + y.hype * 5 + y.wins * 250);
+  const y = G.you, p = G.place, val = prizeVal(y), e = ED();
+  const pts = Math.round(({ 1: 5000, 2: 3000, 3: 2000, 4: 1500 }[p] || Math.max(1, 11 - p) * 150) + val / 10 + y.hype * 5 + y.wins * 250);
   const title = p === 1 ? '🏆 Câștigător Buzz House' : p === 2 ? '🥈 Finalist' : p <= 4 ? '🥉 Finala de anduranță' : p <= 7 ? 'Jumătatea de sus a casei' : 'Casa nu iartă';
-  const best = store.get('bh-best', null);
-  const isBest = !best || pts > best.score;
+  // memoria între sezoane: record, istoric, ediții jucate, insigne
+  const n = store.get('bh-n', 0) + 1; store.set('bh-n', n);
+  const best = store.get('bh-best', null), isBest = !best || pts > best.score;
   if (isBest) store.set('bh-best', { score: pts, title });
+  const hist = store.get('bh-hist', []); hist.push({ n, ed: G.ed, place: p }); store.set('bh-hist', hist.slice(-12));
+  const eds = [...new Set([...store.get('bh-eds', []), G.ed])]; store.set('bh-eds', eds);
+  store.set('bh-next', nextEdition(G.ed));
+  const s = { ...G.stats, place: p, wins: y.wins, hype: y.hype, unan: !!G.unan, firstOut: !!G.firstOut, eds: eds.length,
+    loot: G.prizes.filter(x => x.owner === 'you' && !x.grand).reduce((a, x) => a + x.v, 0) + y.cash,
+    allies: [...G.allies].filter(k => k.split('|').includes('you')).length };
+  const had = store.get('bh-ach', []), earned = ACH.filter(a => a.t(s)), fresh = earned.filter(a => !had.includes(a.id));
+  const owned = [...new Set([...had, ...earned.map(a => a.id)])]; store.set('bh-ach', owned);
   const mine = G.prizes.filter(x => x.owner === 'you');
+  const info = { n, place: p, title, name: y.name, ed: e, hype: y.hype, val, wins: y.wins, pts, badges: earned.map(a => a.e) };
   show(`<div class="stack center">
-    <div class="label">${p === 1 ? 'CÂȘTIGĂTORUL SEZONULUI' : 'Sezonul tău s-a terminat'}</div>
+    <div class="label">${e.emoji} ${e.name} · sezonul ${n}</div>
     <div class="big-place">#${p}</div>
     <h2 class="display" style="font-size:30px">${title}</h2>
-    ${p === 1 ? host(`<b>${esc(y.name)}</b>, ești câștigătorul BUZZ HOUSE! Cheile de la decapotabilă sunt ale tale. 🚗`) : G.winner ? host(`Câștigătorul sezonului e <b>${esc(G.winner.name)}</b>. Ai fost foarte aproape.`) : host(p > 4 ? 'Ai ieșit din casă, dar contorul de urmăritori rămâne.' : 'Frânghia nu iartă. Dar ai ajuns în ultima zi.')}
+    ${p === 1 ? host(`<b>${esc(y.name)}</b>, ești câștigătorul BUZZ HOUSE! ${e.grand.e} ${e.grand.n} e al tău.`) : G.winner ? host(`Câștigătorul sezonului e <b>${esc(G.winner.name)}</b>. Ai fost foarte aproape.`) : host(p > 4 ? 'Ai ieșit din casă, dar contorul de urmăritori rămâne.' : 'Frânghia nu iartă. Dar ai ajuns în ultima zi.')}
     <div class="statgrid"><div><b>${pts}</b><span>PUNCTE ${isBest ? '· RECORD NOU 🔥' : ''}</span></div><div><b>${fmtK(y.hype)}</b><span>URMĂRITORI NOI</span></div><div><b>${fmtE(val)}</b><span>VALOARE PREMII</span></div><div><b>${y.wins}</b><span>PROBE CÂȘTIGATE</span></div></div>
+    ${fresh.length ? `<div class="panel stack"><div class="label">Insigne noi</div><div class="badges">${fresh.map(a => `<div class="bdg new"><i>${a.e}</i>${a.n}</div>`).join('')}</div></div>` : ''}
     ${mine.length || y.cash ? `<div class="panel" style="text-align:left"><div class="label">Pleci acasă cu</div>${mine.map(x => `<div style="margin-top:6px">${x.e} ${esc(x.n)} <span class="muted">· ${fmtE(x.v)}</span></div>`).join('')}${y.cash ? `<div style="margin-top:6px">💸 Bani din casă <span class="muted">· ${fmtE(y.cash)}</span></div>` : ''}</div>` : ''}
-    <button class="btn" data-act="again">JOACĂ ALT SEZON</button>
+    <button class="btn" data-act="card">📸 CARD PENTRU STORY</button>
+    <button class="btn paper" data-act="again">JOACĂ SEZONUL ${n + 1} · ${EDITIONS[store.get('bh-next', 'classic')].emoji} ${EDITIONS[store.get('bh-next', 'classic')].name}</button>
+    <div class="panel stack"><div class="label">Insignele tale · ${owned.length}/${ACH.length}</div><div class="badges">${ACH.map(a => `<div class="bdg ${owned.includes(a.id) ? '' : 'off'}" title="${esc(a.d)}"><i>${a.e}</i>${owned.includes(a.id) ? a.n : esc(a.d)}</div>`).join('')}</div></div>
   </div>`);
   if (p === 1) { sfx.win(); confetti(220); } else sfx.lose();
-  await waitAct();
+  if (fresh.length) setTimeout(() => { sfx.ding(); vib(80); }, 700);
+  while (true) {
+    const r = await waitAct();
+    if (r.act === 'card') { await shareCard(info); continue; }
+    return;
+  }
+}
+
+/* ---------- cardul pentru story (1080×1920) ---------- */
+async function drawCard(s) {
+  try { await Promise.all([document.fonts.load('800 100px Display'), document.fonts.load('100px Anton')]); } catch (e) {}
+  const W = 1080, H = 1920, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d'), acc = s.ed.acc, INK = '#0B0B0E';
+  x.fillStyle = INK; x.fillRect(0, 0, W, H);
+  x.fillStyle = 'rgba(255,255,255,.06)';
+  for (let yy = 18; yy < H; yy += 36) for (let xx = 18; xx < W; xx += 36) x.fillRect(xx, yy, 3, 3);
+  const T = (t, X, Y, font, fill, o = {}) => {
+    x.font = font; x.textAlign = o.align || 'center'; x.lineJoin = 'round';
+    const draw = (dy, f) => { if (o.stroke) { x.lineWidth = o.stroke; x.strokeStyle = INK; x.strokeText(t, X, Y + dy); } x.fillStyle = f; x.fillText(t, X, Y + dy); };
+    if (o.shadow) draw(o.sh || 14, o.shadow);
+    draw(0, fill);
+  };
+  const rr = (X, Y, w, h, r) => { x.beginPath(); x.roundRect ? x.roundRect(X, Y, w, h, r) : x.rect(X, Y, w, h); };
+  T(`FAN GAME · SEZONUL ${s.n}`, W / 2, 150, '40px Anton', '#9C978C');
+  x.save(); x.translate(W / 2, 360); x.rotate(-.06);
+  x.fillStyle = acc; x.fillRect(-720, -150, 1440, 300);
+  T('BUZZ HOUSE', 0, 60, '800 170px Display', INK); x.restore();
+  T(`${s.ed.emoji} ${s.ed.name.toUpperCase()}`, W / 2, 640, '58px Anton', acc);
+  T(`#${s.place}`, W / 2, 1060, '800 400px Display', acc, { stroke: 22, shadow: '#FF3B30', sh: 22 });
+  T(s.title, W / 2, 1200, '800 76px Display', '#F4F1EA');
+  T('@' + s.name, W / 2, 1285, '800 54px Display', '#9C978C');
+  const box = (X, Y, v, l) => { x.fillStyle = '#17171D'; rr(X, Y, 440, 170, 28); x.fill(); T(v, X + 220, Y + 98, '76px Anton', acc); T(l, X + 220, Y + 145, '800 30px Display', '#9C978C'); };
+  box(80, 1350, fmtK(s.hype), 'URMĂRITORI NOI'); box(560, 1350, fmtE(s.val), 'VALOARE PREMII');
+  box(80, 1545, String(s.wins), 'PROBE CÂȘTIGATE'); box(560, 1545, String(s.pts), 'PUNCTE');
+  if (s.badges.length) T(s.badges.join('  '), W / 2, 1800, '60px system-ui, sans-serif', '#F4F1EA');
+  T(`JOACĂ ȘI TU → ${GAME_URL}`, W / 2, 1880, '44px Anton', acc);
+  return c;
+}
+async function shareCard(info) {
+  const c = await drawCard(info);
+  const blob = await new Promise(r => c.toBlob(r, 'image/png'));
+  const text = `Am ieșit #${info.place} în Buzz House (${info.ed.name})! Joacă și tu: https://${GAME_URL}`;
+  try {
+    const file = blob && new File([blob], 'buzz-house.png', { type: 'image/png' });
+    if (file && navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text }); return; }
+  } catch (e) { if (e && e.name === 'AbortError') return; }
+  const url = c.toDataURL('image/png');
+  openSheet(`<div class="stack center"><div class="label">📸 Cardul tău</div><img class="share-img" src="${url}" alt="Cardul cu rezultatul tău din sezon">
+    <div class="small muted">Pe telefon: ține apăsat pe imagine și alege „Salvează”.</div>
+    <a class="btn" href="${url}" download="buzz-house.png" style="text-decoration:none">DESCARCĂ IMAGINEA</a>
+    <button class="btn ghost sm" data-act="close">Închide</button></div>`);
+  await waitAct(sheetEl); await closeSheet();
 }
 
 /* =========================================================
@@ -1336,6 +1668,128 @@ async function gameRope({ field, finale = false }) {
   });
 }
 
+async function gameQuote() {
+  const people = G.cast.filter(c => !c.isYou);
+  const rounds = shuffle(people.flatMap(c => c.lines.map(l => ({ c, l })))).slice(0, 6), T = perk('nerd') ? 10 : 7;
+  let total = 0;
+  for (let i = 0; i < rounds.length; i++) {
+    const { c, l } = rounds[i], opts = shuffle([c, ...shuffle(people.filter(o => o !== c)).slice(0, 3)]);
+    show(`<div class="mg"><div class="mg-top"><span class="pill">REPLICA ${i + 1}/${rounds.length}</span><span class="pill big">${total}</span></div>
+      <div class="timer"><i id="qt"></i></div>
+      <div class="say" style="font-size:20px;min-height:96px">„${esc(l)}”</div>
+      <div class="opts">${opts.map((o, j) => `<button class="opt quote-opt" data-act="a" data-id="${j}">${av(o, 'sm')}<span>${esc(o.sn)}</span></button>`).join('')}</div></div>`);
+    const start = performance.now();
+    const res = await new Promise(r => {
+      let done = false;
+      const on = e => { const b = e.target.closest('[data-act="a"]'); if (!b || done) return; done = true; screen.removeEventListener('click', on); r({ j: +b.dataset.id, left: Math.max(0, T - (performance.now() - start) / 1000) }); };
+      screen.addEventListener('click', on);
+      const tick = () => { if (done) return; const left = T - (performance.now() - start) / 1000, bar = $('#qt'); if (bar) bar.style.width = Math.max(0, left / T * 100) + '%'; if (left <= 0) { done = true; screen.removeEventListener('click', on); r({ j: -1, left: 0 }); } else requestAnimationFrame(tick); };
+      tick();
+    });
+    screen.querySelectorAll('.opt').forEach((el, j) => { if (opts[j] === c) el.classList.add('ok'); else if (j === res.j) el.classList.add('no'); });
+    if (res.j >= 0 && opts[res.j] === c) { const p = 100 + Math.round(50 * res.left / T); total += p; sfx.ding(); toast(`+${p}`); } else { sfx.wrong(); if (res.j < 0) toast('⏱️ Timpul a expirat', true); }
+    await sleep(1100);
+  }
+  return total;
+}
+
+async function gameDance() {
+  const BPM = 116, beat = 60 / BPM, LEN = 20, LEAD = 1.6, TRAVEL = 1.35;
+  const LANES = [{ a: '←', c: '#FFD60A', k: ['KeyD', 'ArrowLeft'], f: 523 }, { a: '↓', c: '#FF3B30', k: ['KeyF', 'ArrowDown'], f: 587 }, { a: '↑', c: '#2BD96B', k: ['KeyJ', 'ArrowUp'], f: 659 }, { a: '→', c: '#2F7BFF', k: ['KeyK', 'ArrowRight'], f: 784 }];
+  const notes = []; let lastLane = -1;
+  for (let t = LEAD + 2 * beat; t < LEN - .4; t += beat) {
+    if (Math.random() < .84) { let l; do l = ri(0, 3); while (l === lastLane && Math.random() < .7); lastLane = l; notes.push({ t, l }); }
+    if (t > LEN * .45 && Math.random() < .3) { let l = ri(0, 3); if (l === lastLane) l = (l + 1) % 4; notes.push({ t: t + beat / 2, l }); }
+  }
+  show(`<div class="mg dance"><div class="mg-top"><span class="pill big" id="dt">${LEN}.0s</span><span class="pill big" id="ds">0 p</span></div>
+    <canvas id="dc"></canvas>
+    <div class="lanes">${LANES.map((L, i) => `<button class="lane-btn" data-l="${i}" style="background:${L.c}">${L.a}</button>`).join('')}</div></div>`);
+  const cv = $('#dc'), ctx = cv.getContext('2d'), dpr = Math.min(2, devicePixelRatio || 1), W = cv.clientWidth, H = cv.clientHeight;
+  cv.width = W * dpr; cv.height = H * dpr; ctx.scale(dpr, dpr);
+  const hitY = H - 46, lw = W / 4;
+  let score = 0, combo = 0, judge = null;
+  // muzica: kick pe fiecare timp, hi-hat pe contratimp, linie de bas pe 4 măsuri
+  const BASS = [110, 110, 131, 98];
+  for (let k = 0; k * beat < LEN; k++) { sfx.kick(k * beat); sfx.hat(k * beat + beat / 2); if (k % 2 === 0) sfx.bass(BASS[Math.floor(k / 4) % 4], k * beat); }
+  const t0 = performance.now();
+  const now = () => (performance.now() - t0) / 1000;
+  const press = l => {
+    const b = screen.querySelector(`.lane-btn[data-l="${l}"]`); if (b) { b.classList.add('hit'); setTimeout(() => b.classList.remove('hit'), 90); }
+    const t = now(); let best = null;
+    for (const n of notes) if (!n.done && n.l === l && Math.abs(n.t - t) < .16 && (!best || Math.abs(n.t - t) < Math.abs(best.t - t))) best = n;
+    if (!best) { combo = 0; return; }
+    best.done = true; const d = Math.abs(best.t - t);
+    const pts = d < .06 ? 3 : 1; score += pts; combo++;
+    judge = { txt: pts === 3 ? 'PERFECT' : 'BINE', c: pts === 3 ? '#FFD60A' : '#F4F1EA', t, l };
+    tone(LANES[l].f, .09, 'triangle', .1);
+    $('#ds').textContent = score + ' p';
+  };
+  const down = e => { const b = e.target.closest('.lane-btn'); if (!b) return; e.preventDefault(); press(+b.dataset.l); };
+  const key = e => { if (e.repeat) return; const l = LANES.findIndex(L => L.k.includes(e.code)); if (l > -1) { e.preventDefault(); press(l); } };
+  screen.addEventListener('pointerdown', down); addEventListener('keydown', key);
+  return new Promise(resolve => {
+    const frame = () => {
+      const t = now();
+      if (t >= LEN) { screen.removeEventListener('pointerdown', down); removeEventListener('keydown', key); sfx.buzz(); resolve(score); return; }
+      $('#dt').textContent = (LEN - t).toFixed(1) + 's';
+      for (const n of notes) if (!n.done && !n.miss && t - n.t > .16) { n.miss = true; combo = 0; judge = { txt: 'RATAT', c: '#FF3B30', t, l: n.l }; }
+      ctx.clearRect(0, 0, W, H);
+      const pulse = 1 - ((t % beat) / beat);
+      for (let i = 0; i < 4; i++) { ctx.fillStyle = i % 2 ? 'rgba(255,255,255,.025)' : 'rgba(255,255,255,.05)'; ctx.fillRect(i * lw, 0, lw, H); }
+      ctx.fillStyle = `rgba(255,255,255,${.25 + .35 * pulse})`; ctx.fillRect(0, hitY - 2, W, 4);
+      for (let i = 0; i < 4; i++) { ctx.strokeStyle = LANES[i].c; ctx.globalAlpha = .5; ctx.lineWidth = 3; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(i * lw + 8, hitY - 24, lw - 16, 48, 12) : ctx.rect(i * lw + 8, hitY - 24, lw - 16, 48); ctx.stroke(); ctx.globalAlpha = 1; }
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      for (const n of notes) {
+        if (n.done || n.miss) continue;
+        const y = hitY - (n.t - t) / TRAVEL * hitY; if (y < -40 || y > H + 40) continue;
+        ctx.fillStyle = LANES[n.l].c; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(n.l * lw + 10, y - 22, lw - 20, 44, 12) : ctx.rect(n.l * lw + 10, y - 22, lw - 20, 44); ctx.fill();
+        ctx.fillStyle = '#0B0B0E'; ctx.font = '900 28px system-ui, sans-serif'; ctx.fillText(LANES[n.l].a, n.l * lw + lw / 2, y + 1);
+      }
+      if (judge && t - judge.t < .5) { ctx.globalAlpha = 1 - (t - judge.t) / .5; ctx.fillStyle = judge.c; ctx.font = '800 30px Display'; ctx.fillText(judge.txt, judge.l * lw + lw / 2, hitY - 70 - (t - judge.t) * 60); ctx.globalAlpha = 1; }
+      if (combo >= 5) { ctx.fillStyle = '#F4F1EA'; ctx.font = '800 26px Display'; ctx.fillText(`COMBO ×${combo}`, W / 2, 34); }
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  });
+}
+
+async function gameMole() {
+  const T = 20; let score = 0;
+  show(`<div class="mg"><div class="mg-top"><span class="pill big" id="pt">${T}.0s</span><span class="pill big" id="ps">0 📸</span></div>
+    <div class="moles">${Array.from({ length: 9 }, (_, i) => `<button class="mole" data-m="${i}"><span></span></button>`).join('')}</div>
+    <div class="mg-hint">📸 paparazzi +1 · ⭐ Selly +3 · 🙋 fan −2</div></div>`);
+  const cells = [...screen.querySelectorAll('.mole')], state = cells.map(() => null);
+  const flash = (el, cls) => { el.classList.add(cls); setTimeout(() => el.classList.remove(cls), 160); };
+  cells.forEach((el, i) => el.addEventListener('pointerdown', e => {
+    e.preventDefault(); const s = state[i]; if (!s) return;
+    state[i] = null; el.classList.remove('up');
+    const d = s.k === 'p' ? 1 : s.k === 's' ? 3 : -2; score = Math.max(0, score + d);
+    if (d > 0) { tone(s.k === 's' ? 1320 : 940, .07, 'square', .08); flash(el, 'hit'); } else { sfx.wrong(); flash(el, 'bad'); vib(60); }
+    $('#ps').textContent = score + ' 📸';
+  }));
+  const start = performance.now(); let spawn = .3, last = start;
+  return new Promise(resolve => {
+    const frame = now => {
+      const dt = Math.min(.05, (now - last) / 1000); last = now; const el = (now - start) / 1000, k = el / T;
+      if (el >= T) { sfx.buzz(); resolve(score); return; }
+      $('#pt').textContent = (T - el).toFixed(1) + 's';
+      spawn -= dt;
+      if (spawn <= 0) {
+        spawn = .62 - .3 * k;
+        const free = state.map((s, i) => s ? -1 : i).filter(i => i > -1);
+        if (free.length) {
+          const i = pick(free), r = Math.random(), kind = r < .1 ? 's' : r < .34 ? 'f' : 'p';
+          state[i] = { k: kind, until: el + (1.05 - .45 * k) };
+          cells[i].firstChild.textContent = kind === 'p' ? '📸' : kind === 's' ? '⭐' : '🙋'; cells[i].classList.add('up');
+        }
+      }
+      state.forEach((s, i) => { if (s && el > s.until) { state[i] = null; cells[i].classList.remove('up'); } });
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  });
+}
+
 /* ---------- confetti ---------- */
 function confetti(n = 120) {
   const cv = $('#confetti'), ctx = cv.getContext('2d'), app = $('#app'), dpr = Math.min(2, devicePixelRatio || 1);
@@ -1353,17 +1807,23 @@ function confetti(n = 120) {
    BUCLA PRINCIPALĂ
    ========================================================= */
 async function season() {
-  await titleScreen();
-  await setupScreen();
+  const ed = await titleScreen();
+  await setupScreen(ed);
   await introScreen();
   for (G.day = 1; G.day <= 7; G.day++) {
-    G.today = { ...PRIZES[G.day - 1] }; G.immune = null;
+    G.today = { ...ED().prizes[G.day - 1] };
+    Object.assign(G, { immune: null, youImm: false, leader: false, sale: false, double: false, dayWinner: null });
     await dayCard();
+    const tw = TWISTS[G.twists[G.day]];
+    if (tw && tw.ok()) await twistCard(tw);
     await morning();
     await eventPhase();
     await challengePhase();
-    if (G.day >= 2) { const out = await elimination(); if (out === 'you') return endScreen(); }
-    if (G.day === 4) await chipNight();
+    if (G.day >= 2) {
+      if (await elimination() === 'you') return endScreen();
+      if (G.double && aliveAll().length > 4 && await elimination(true) === 'you') return endScreen();
+    }
+    if (chipDays().includes(G.day)) await chipNight();
     simHouse();
   }
   G.day = 8; G.immune = null;

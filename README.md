@@ -19,6 +19,10 @@ Set `voiceover` to `"vo/day1.mp3"` (the file goes in `public/vo/`).
 
 ## Buzz House: Sezonul Tău (fan game)
 `game/index.html` is a self-contained mobile game (no build, no dependencies, fonts inlined). Open it in any browser.
-- 8 days: morning social actions → house event → daily challenge (BUZZ!, quiz, math, memory, likes, rope) → prize steal → nominations → public vote.
-- Night 4: "Noaptea Chipărușului" stealth event. Finale: rope endurance, then a jury of eliminated contestants.
+- 8 days: morning social actions → house event → daily challenge → prize steal → nominations → public vote with live chat.
+- Every season is a different edition (Clasică, Winter, Vila din Pădure, Vară) with its own rules, prizes, events and animated background.
+- 3 of 6 Selly twists per season (secret contestant, double elimination, prize swap, comeback, immunity for sale, house leader).
+- 9 challenges, 7 per season: BUZZ!, quiz, math, memory, likes, rope, "Cine a zis-o?", TikTok Dance, Paparazzi.
+- Chipăruș stealth night (twice in the forest edition). Finale: rope endurance, then a jury of eliminated contestants.
+- Between seasons it remembers your record, history and 12 badges; the end screen makes a 1080x1920 story card.
 - Add `#debug` to the URL to auto-resolve challenges (used for automated playthroughs).
