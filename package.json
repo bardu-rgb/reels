@@ -1,0 +1,30 @@
+{
+  "name": "reels",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TikTok/Reels factory: Remotion kinetic typography from script JSON",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "node scripts/render.mjs",
+    "still": "remotion still"
+  },
+  "dependencies": {
+    "@remotion/captions": "^4.0.533",
+    "@remotion/cli": "^4.0.533",
+    "@remotion/fonts": "4.0.533",
+    "@remotion/media": "4.0.533",
+    "@remotion/media-utils": "^4.0.533",
+    "@remotion/motion-blur": "^4.0.533",
+    "@remotion/noise": "^4.0.533",
+    "@remotion/shapes": "^4.0.533",
+    "@remotion/transitions": "^4.0.533",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "remotion": "^4.0.533",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "typescript": "^7.0.2"
+  }
+}
