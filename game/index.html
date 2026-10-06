@@ -237,6 +237,17 @@ input.name:focus{border-color:var(--yellow);box-shadow:0 0 0 3px var(--ink)}
 #confetti{position:absolute;inset:0;z-index:35;pointer-events:none}
 .shake{animation:shk .4s}
 @keyframes shk{0%,100%{transform:none}20%{transform:translate(-7px,3px)}40%{transform:translate(6px,-4px)}60%{transform:translate(-5px,-2px)}80%{transform:translate(4px,3px)}}
+.house-cv{width:100%;height:min(62dvh,560px);min-height:400px;border-radius:18px;border:3px solid var(--ink3);touch-action:manipulation;cursor:pointer;display:block}
+.tv{position:relative;overflow:hidden;border:3px solid var(--ink3);border-radius:20px;padding:14px 16px 18px;background:radial-gradient(120% 90% at 50% 0%,var(--ink3),var(--ink2));text-align:center}
+.tv:after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 2px,transparent 2px 4px)}
+.tv-top{display:flex;justify-content:space-between;gap:6px;font-family:Anton;letter-spacing:1px;font-size:12px;color:var(--muted);text-transform:uppercase}
+.rec{color:var(--red);animation:blink 1.1s steps(2) infinite}
+@keyframes blink{50%{opacity:.25}}
+.tv-ep{font-family:Anton;letter-spacing:6px;font-size:15px;color:var(--yellow);margin-top:16px}
+.tv-title{font-family:Display;font-size:40px;line-height:1.02;margin:6px 0 4px;color:#fff;-webkit-text-stroke:6px var(--ink);paint-order:stroke fill;text-shadow:0 5px 0 var(--red);text-wrap:balance}
+.tv-sub{font-size:13px;color:var(--muted);font-weight:700}
+.tv-prev{margin-top:14px;text-align:left;display:flex;flex-direction:column;gap:6px;font-size:13.5px;line-height:1.35}
+.tv-prev>div:not(.label){background:#0B0B0E99;border-left:3px solid var(--yellow);padding:6px 9px;border-radius:6px}
 /* probele noi */
 .tall-cv{width:100%;height:min(56dvh,520px);min-height:320px;border-radius:18px;background:var(--ink2);border:3px solid var(--ink3);touch-action:none}
 .stopw{font-family:Anton;font-size:88px;line-height:1;text-align:center;letter-spacing:2px;color:var(--yellow);margin-top:14px;font-variant-numeric:tabular-nums}
@@ -386,8 +397,49 @@ const sfx = {
   scream() { tone(900, .7, 'sawtooth', .18, 700); noise(.7, .3, 3000); vib([200, 60, 300]); },
 };
 function vib(p) { if (muted) return; try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} }
+
+/* ---------- muzica de fundal: un beat trap generat pe loc, alt tempo și altă tonalitate pe fiecare ediție ---------- */
+const music = { on: false, want: false, timer: 0, step: 0, next: 0, gain: null, bpm: 92, key: 0 };
+const PROG = [[57, 60, 64], [53, 57, 60], [48, 52, 55], [55, 59, 62]]; // la minor, fa, do, sol
+const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+let noiseBufC = null;
+function noiseBuf() { if (noiseBufC) return noiseBufC; const n = ac.sampleRate * .3; noiseBufC = ac.createBuffer(1, n, ac.sampleRate); const d = noiseBufC.getChannelData(0); for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1; return noiseBufC; }
+function mNote(f, t, d, type, v) { const o = ac.createOscillator(), g = ac.createGain(); o.type = type; o.frequency.value = f; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + .012); g.gain.exponentialRampToValueAtTime(.0001, t + d); o.connect(g).connect(music.gain); o.start(t); o.stop(t + d + .05); }
+function mDrum(k, t, v = 1) {
+  if (k === 'kick') { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(40, t + .2); g.gain.setValueAtTime(.95, t); g.gain.exponentialRampToValueAtTime(.001, t + .32); o.connect(g).connect(music.gain); o.start(t); o.stop(t + .34); return; }
+  const len = k === 'snare' ? .2 : .045, s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+  s.buffer = noiseBuf(); f.type = k === 'snare' ? 'bandpass' : 'highpass'; f.frequency.value = k === 'snare' ? 1700 : 8500;
+  g.gain.setValueAtTime((k === 'snare' ? .55 : .17) * v, t); g.gain.exponentialRampToValueAtTime(.001, t + len);
+  s.connect(f).connect(g).connect(music.gain); s.start(t); s.stop(t + len + .02);
+}
+function schedMusic() {
+  if (!ac) return;
+  const spb = 60 / music.bpm / 4;
+  while (music.next < ac.currentTime + .15) {
+    const s = music.step % 64, t = music.next, bar = Math.floor(s / 16), b = s % 16, ch = PROG[bar].map(m => m + music.key);
+    if (b === 0 || b === 10 || (bar === 3 && b === 14)) mDrum('kick', t);
+    if (b === 4 || b === 12) mDrum('snare', t);
+    if (b % 2 === 0) mDrum('hat', t, b % 4 ? .55 : 1);
+    if (bar === 3 && b >= 12) mDrum('hat', t, .45);
+    if (b === 0 || b === 7 || b === 10) mNote(mtof(ch[0] - 24), t, spb * (b === 0 ? 6 : 3), 'triangle', .3);
+    if (b === 0) ch.forEach(m => mNote(mtof(m), t, spb * 15, 'sine', .05));
+    if (b === 2 || b === 6 || b === 11 || b === 14) mNote(mtof(ch[(b >> 2) % 3] + 12), t, spb * 1.6, 'square', .02);
+    music.next += spb; music.step++;
+  }
+}
+function musicStart() {
+  if (music.on || muted || document.hidden) return; const c = actx(); if (!c) return;
+  if (!music.gain) { music.gain = c.createGain(); music.gain.gain.value = 0; music.gain.connect(c.destination); }
+  const e = G && G.ed ? G.ed : 'classic';
+  Object.assign(music, { classic: { bpm: 92, key: 0 }, winter: { bpm: 84, key: -2 }, forest: { bpm: 78, key: -5 }, beach: { bpm: 100, key: 2 } }[e]);
+  music.gain.gain.cancelScheduledValues(c.currentTime); music.gain.gain.setTargetAtTime(.5, c.currentTime, .5);
+  music.on = true; music.next = c.currentTime + .1; music.step = 0; music.timer = setInterval(schedMusic, 30);
+}
+function musicStop() { if (!music.on) return; music.on = false; clearInterval(music.timer); if (ac && music.gain) music.gain.gain.setTargetAtTime(0, ac.currentTime, .12); }
+function musicWant(on) { music.want = on; if (on && !DEBUG) musicStart(); else musicStop(); }
+document.addEventListener('visibilitychange', () => { if (document.hidden) musicStop(); else if (music.want) musicStart(); });
 $('#mute').textContent = muted ? '🔇' : '🔊';
-$('#mute').onclick = () => { muted = !muted; store.set('bh-muted', muted); $('#mute').textContent = muted ? '🔇' : '🔊'; };
+$('#mute').onclick = () => { muted = !muted; store.set('bh-muted', muted); $('#mute').textContent = muted ? '🔇' : '🔊'; if (muted) musicStop(); else if (music.want) musicStart(); };
 
 /* ---------- date: distribuția ---------- */
 // Statistici de joc (1-10): know=cultură, refl=reflexe, endu=anduranță, mem=memorie.
@@ -543,6 +595,7 @@ function planTwists() {
 }
 async function twistCard(t) {
   const desc = seeded(G.seed + G.day * 131, () => t.apply());
+  recap(`⚡ Twist: <b>${t.name}</b>`);
   const o = document.createElement('div'); o.className = 'twist';
   o.innerHTML = `<div class="tw-stripes"></div><div class="tw-stripes b"></div><div class="tw-in"><div class="tw-title">⚡ TWIST ⚡</div><h2 class="display tw-name">${t.name}</h2>${host(desc)}<button class="btn" data-act="ok">AOLEU 😳</button></div>`;
   $('#app').appendChild(o); sfx.twist(); shake();
@@ -685,12 +738,13 @@ const who = c => c.name.toLowerCase() === 'tu' ? 'Tu' : c.name + ' (tu)';
 function newGame(name, arch, ed, m) {
   const you = { id: 'you', isYou: true, name, sn: name, tag: ARCH[arch].name, emoji: ARCH[arch].emoji, color: '#FFD60A', arch,
     fame: ARCH[arch].fame, hype: 0, wins: 0, cash: 0, alive: true };
+  HOUSE.pos = {}; HOUSE.bubbles = {};
   // tot ce ține de „ce sezon e” vine din cod: aceeași distribuție, relații, probe, twist-uri și rival
   seeded(m.seed, () => {
     const npcs = shuffle(ROSTER).slice(0, 9).map(r => ({ ...r, hype: 0, wins: 0, cash: 0, alive: true }));
     G = { day: 0, ed, seed: m.seed, mode: m.mode, target: m.target || null, dailyNo: m.no || null,
       you, cast: [you, ...npcs], rel: {}, allies: new Set(), prizes: [], elim: [], grudge: {}, news: [], offers: [],
-      fx: {}, card: 0, usedQ: new Set(), usedE: new Set(), immune: null, place: null, today: null,
+      fx: {}, card: 0, usedQ: new Set(), usedE: new Set(), immune: null, place: null, today: null, recap: [],
       stats: { steals: 0, dramas: 0, chip: 0, card: 0, nemesis: 0, peace: 0 } };
     for (const a of npcs) {
       addRel(a, you, ri(-8, 12));
@@ -786,7 +840,7 @@ async function titleScreen() {
     <p class="disc">Joc făcut de fani, pentru fani. Nu e afiliat cu Selly, Buzz House sau producătorii show-ului.<br>Toate întâmplările din joc sunt inventate.</p>
   </div>`);
   while (true) {
-    const r = await waitAct(); actx();
+    const r = await waitAct(); actx(); musicWant(true);
     if (r.act === 'install') { if (installPrompt) { installPrompt.prompt(); installPrompt = null; r.el.hidden = true; } continue; }
     if (r.act === 'challenge') { try { history.replaceState(null, '', location.pathname); } catch (e) {} return { mode: 'challenge', seed: ch.seed, target: ch.target }; }
     if (r.act === 'daily') return { mode: 'daily', seed: day.seed, no: day.no };
@@ -836,18 +890,147 @@ async function introScreen() {
   await waitAct();
 }
 
+const EP_TITLES = ['Bun venit în casă', 'Primele fisuri', 'Alianțe de carton', 'Cine minte?', 'Nimic nu e sigur', 'Totul sau nimic', 'Ultima noapte', 'Marea finală'];
+function recap(t) { G.recap.push({ d: G.day, t }); }
 async function dayCard() {
-  const fin = G.day === 8;
-  const prize = fin ? ED().grand : G.today;
-  show(`<div class="stack center" style="padding-top:20px">
-    <div class="label">${fin ? 'Ultima zi' : aliveAll().length + ' concurenți în casă'}</div>
-    <h1 class="display" style="font-size:88px;color:var(--yellow);-webkit-text-stroke:8px var(--ink);paint-order:stroke fill;text-shadow:0 7px 0 var(--red)">${fin ? 'FINALA' : 'ZIUA ' + G.day}</h1>
+  const fin = G.day === 8, prize = fin ? ED().grand : G.today;
+  const title = fin ? EP_TITLES[7] : G.twists[G.day] ? '⚡ Selly a pregătit ceva' : EP_TITLES[G.day - 1];
+  const prev = G.recap.filter(r => r.d < G.day).slice(-3);
+  const mm = String(9 + G.day * 3).padStart(2, '0');
+  show(`<div class="stack">
+    <div class="tv">
+      <div class="tv-top"><span class="rec">● LIVE</span><span>${ED().emoji} ${esc(ED().name)}</span><span>ZIUA ${Math.min(G.day, 8)} · 09:${mm}</span></div>
+      <div class="tv-ep">${fin ? 'EPISODUL FINAL' : 'EPISODUL ' + G.day}</div>
+      <h1 class="tv-title">${title}</h1>
+      <div class="tv-sub">${fin ? 'Ultima zi' : aliveAll().length + ' concurenți în casă'}</div>
+      ${prev.length ? `<div class="tv-prev"><div class="label">Anterior în Buzz House</div>${prev.map(r => `<div>${r.t}</div>`).join('')}</div>` : ''}
+    </div>
     ${host(G.day === 1 ? ED().d1 : DAY_LINES[G.day - 1])}
     <div class="prize"><div class="e">${prize.e}</div><div style="text-align:left"><div class="label">${fin ? 'Marele premiu' : 'Premiul zilei'}</div><div class="n">${prize.n}</div><div class="small muted">${fmtE(prize.v)}</div></div></div>
     <button class="btn" data-act="go">${fin ? 'ULTIMA DIMINEAȚĂ' : 'BUNĂ DIMINEAȚA ☀️'}</button>
   </div>`);
   sfx.whoosh();
   await waitAct();
+}
+
+/* ---------- casa vie: vezi casa de sus, concurenții se plimbă, atingi pe cine vrei ---------- */
+const ROOMS = {
+  kitchen: { x: 0, y: 0, w: .4, h: .36, label: 'BUCĂTĂRIA' },
+  conf: { x: .4, y: 0, w: .2, h: .22, label: '' },
+  bed: { x: .6, y: 0, w: .4, h: .36, label: 'DORMITORUL' },
+  living: { x: 0, y: .36, w: 1, h: .34, label: 'LIVINGUL' },
+  yard: { x: 0, y: .7, w: 1, h: .3, label: '' },
+};
+const YARD = { classic: 'PISCINA', winter: 'CURTEA CU ZĂPADĂ', forest: 'MALUL LACULUI', beach: 'PLAJA' };
+const MOODS = { drama: ['💅', '😤', '📱', '🙄', '💢'], charm: ['😂', '🎶', '🍕', '✨', '🥳'], strat: ['🤫', '👀', '🧠', '📝'], any: ['💬', '😴', '🔥', '👍', '☕'] };
+const HOUSE = { pos: {}, bubbles: {}, next: 0 };
+function roomBox(r, W, H) {
+  const R0 = ROOMS[r], b = { x: R0.x * W + 22, y: R0.y * H + 28, w: R0.w * W - 44, h: R0.h * H - 64 };
+  // în curte, nimeni nu stă în apă: în pădure lacul e în dreapta, la mare apa e jos
+  if (r === 'yard' && G && G.ed === 'forest') b.w = W * .4;
+  if (r === 'yard' && G && G.ed === 'beach') b.h = Math.max(4, R0.h * H * .55 - 40);
+  return b;
+}
+function houseTarget(p, W, H) {
+  // nimeni nu se oprește peste tine (stai în mijlocul livingului)
+  const b = roomBox(p.room, W, H);
+  for (let i = 0; i < 10; i++) { p.tx = b.x + Math.random() * Math.max(1, b.w); p.ty = b.y + Math.random() * Math.max(1, b.h); if (Math.hypot(p.tx - W * .5, p.ty - H * .53) > 58) break; }
+}
+function houseScene(cv) {
+  const dpr = Math.min(2, devicePixelRatio || 1), W = cv.clientWidth, H = cv.clientHeight, x = cv.getContext('2d');
+  cv.width = W * dpr; cv.height = H * dpr; x.scale(dpr, dpr);
+  const rooms = ['living', 'living', 'kitchen', 'bed', 'yard', 'yard'];
+  for (const c of aliveNPC()) if (!HOUSE.pos[c.id]) { const p = { room: pick(rooms), wait: Math.random() * 2 }; houseTarget(p, W, H); p.x = p.tx; p.y = p.ty; HOUSE.pos[c.id] = p; }
+  const me = { x: W * .5, y: H * .53 };
+  const relCol = v => v > 20 ? '#2BD96B' : v < -20 ? '#FF3B30' : '#FFD60A';
+  const label = (t, r) => { const R0 = ROOMS[r]; x.font = '800 10px system-ui, sans-serif'; x.fillStyle = r === 'yard' && (G.ed === 'winter' || G.ed === 'beach') ? 'rgba(11,11,14,.6)' : 'rgba(244,241,234,.55)'; x.textAlign = 'left'; x.textBaseline = 'top'; x.fillText(t, R0.x * W + 8, R0.y * H + 7); };
+  const emo = (t, X, Y, s) => { x.font = `${s}px system-ui, sans-serif`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(t, X, Y); };
+  // tapetul casei se desenează o singură dată într-un canvas separat
+  const bg = document.createElement('canvas'); bg.width = W * dpr; bg.height = H * dpr; const bx = bg.getContext('2d'); bx.scale(dpr, dpr);
+  const drawBg = g => {
+    const R = (r, fill) => { const R0 = ROOMS[r]; g.fillStyle = fill; g.fillRect(R0.x * W, R0.y * H, R0.w * W, R0.h * H); };
+    // bucătăria: gresie în carouri
+    const K = ROOMS.kitchen; for (let i = 0; i * 18 < K.w * W; i++) for (let j = 0; j * 18 < K.h * H; j++) { g.fillStyle = (i + j) % 2 ? '#2e2a33' : '#37323e'; g.fillRect(i * 18, j * 18, 18, 18); }
+    g.fillStyle = '#4b4453'; g.fillRect(6, K.h * H - 30, K.w * W - 12, 22);
+    R('conf', '#3a1414'); R('bed', '#232136'); R('living', '#2a231d');
+    const B = ROOMS.bed; for (let i = 0; i < 3; i++) { const bx0 = B.x * W + 14 + i * (B.w * W - 20) / 3; g.fillStyle = '#3f3b63'; g.fillRect(bx0, 26, (B.w * W - 20) / 3 - 10, B.h * H - 40); g.fillStyle = '#d8d2c4'; g.fillRect(bx0 + 4, 30, (B.w * W - 20) / 3 - 18, 10); }
+    const L = ROOMS.living; g.fillStyle = '#3a2a4a'; g.beginPath(); g.ellipse(W * .5, L.y * H + L.h * H * .55, W * .26, L.h * H * .3, 0, 0, 6.283); g.fill();
+    g.fillStyle = '#4a3b30'; g.fillRect(W * .18, L.y * H + L.h * H - 22, W * .64, 14); g.fillRect(W * .18, L.y * H + 18, 12, L.h * H - 26); g.fillRect(W * .82 - 12, L.y * H + 18, 12, L.h * H - 26);
+    g.fillStyle = '#111'; g.fillRect(W * .4, L.y * H + 6, W * .2, 8);
+    const ed = G.ed, Y = ROOMS.yard, yy = Y.y * H, yh = Y.h * H;
+    if (ed === 'winter') { g.fillStyle = '#d9e6f2'; g.fillRect(0, yy, W, yh); }
+    else if (ed === 'forest') { g.fillStyle = '#13261a'; g.fillRect(0, yy, W, yh); g.fillStyle = '#123247'; g.beginPath(); g.ellipse(W * .72, yy + yh * .6, W * .24, yh * .32, 0, 0, 6.283); g.fill(); }
+    else if (ed === 'beach') { g.fillStyle = '#d9b77a'; g.fillRect(0, yy, W, yh * .55); g.fillStyle = '#1f7fb2'; g.fillRect(0, yy + yh * .55, W, yh * .45); }
+    else { g.fillStyle = '#2a2f2a'; g.fillRect(0, yy, W, yh); g.fillStyle = '#1f6fb2'; g.fillRect(W * .2, yy + yh * .28, W * .6, yh * .5); g.strokeStyle = 'rgba(255,255,255,.25)'; g.lineWidth = 2; for (let i = 0; i < 4; i++) { g.beginPath(); g.moveTo(W * .24 + i * W * .14, yy + yh * .4); g.lineTo(W * .3 + i * W * .14, yy + yh * .4); g.stroke(); } }
+    // pereții
+    g.strokeStyle = '#0B0B0E'; g.lineWidth = 5;
+    for (const r of Object.values(ROOMS)) g.strokeRect(r.x * W, r.y * H, r.w * W, r.h * H);
+    // ușile: goluri în pereți
+    g.strokeStyle = '#2a231d'; g.lineWidth = 7;
+    for (const dx of [W * .2, W * .8]) { g.beginPath(); g.moveTo(dx - 16, ROOMS.living.y * H); g.lineTo(dx + 16, ROOMS.living.y * H); g.stroke(); }
+    g.beginPath(); g.moveTo(W * .5 - 20, ROOMS.yard.y * H); g.lineTo(W * .5 + 20, ROOMS.yard.y * H); g.stroke();
+    g.beginPath(); g.moveTo(W * .5 - 14, ROOMS.conf.h * H); g.lineTo(W * .5 + 14, ROOMS.conf.h * H); g.stroke();
+  };
+  drawBg(bx);
+  const deco = () => {
+    const Y = ROOMS.yard, yy = Y.y * H, yh = Y.h * H;
+    if (G.ed === 'winter') { emo('☃️', W * .12, yy + yh * .5, 26); emo('🌲', W * .9, yy + yh * .45, 26); }
+    else if (G.ed === 'forest') { emo('🌲', W * .1, yy + yh * .4, 28); emo('🌲', W * .28, yy + yh * .7, 24); emo('🛶', W * .72, yy + yh * .6, 22); }
+    else if (G.ed === 'beach') { emo('⛱️', W * .15, yy + yh * .3, 26); emo('🏐', W * .85, yy + yh * .32, 20); }
+    else { emo('🛟', W * .78, yy + yh * .5, 20); emo('🪴', W * .08, yy + yh * .3, 20); }
+    emo('🎥', W * .5, ROOMS.conf.h * H * .48, 26); emo('🍳', W * .08, ROOMS.kitchen.h * H - 19, 16); emo('📺', W * .5, ROOMS.living.y * H + 10, 14);
+    label('BUCĂTĂRIA', 'kitchen'); label('DORMITORUL', 'bed'); label('LIVINGUL', 'living'); label(YARD[G.ed] || 'CURTEA', 'yard');
+    x.font = '800 9px system-ui, sans-serif'; x.fillStyle = '#FF8A80'; x.textAlign = 'center'; x.textBaseline = 'top'; x.fillText('CONFESIONAL', W * .5, 6);
+  };
+  const npcAt = (px, py) => { let best = null, bd = 30; for (const c of aliveNPC()) { const p = HOUSE.pos[c.id]; if (!p) continue; const d = Math.hypot(p.x - px, p.y - py); if (d < bd) { bd = d; best = c; } } return best; };
+  cv.addEventListener('pointerdown', e => {
+    const r = cv.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top, c = npcAt(px, py), C0 = ROOMS.conf;
+    if (c) { cv.dataset.act = 'npc'; cv.dataset.id = c.id; }
+    else if (G.ap > 0 && px > C0.x * W && px < (C0.x + C0.w) * W && py < C0.h * H) { cv.dataset.act = 'conf'; delete cv.dataset.id; }
+    else { delete cv.dataset.act; }
+  });
+  let last = performance.now();
+  const frame = now => {
+    if (!cv.isConnected) return;
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    x.clearRect(0, 0, W, H); x.drawImage(bg, 0, 0, W, H); deco();
+    const npcs = aliveNPC();
+    for (const c of npcs) {
+      const p = HOUSE.pos[c.id]; if (!p) continue;
+      const dx = p.tx - p.x, dy = p.ty - p.y, d = Math.hypot(dx, dy);
+      if (d > 2) { const sp = Math.min(d, 34 * dt); p.x += dx / d * sp; p.y += dy / d * sp; }
+      else if ((p.wait -= dt) <= 0) { if (Math.random() < .18) p.room = pick(['living', 'kitchen', 'bed', 'yard']); houseTarget(p, W, H); p.wait = 1 + Math.random() * 3; }
+    }
+    // reacții: balonașe; dușmanii din aceeași cameră se iau la ceartă
+    if (now > HOUSE.next) {
+      HOUSE.next = now + 1100 + Math.random() * 900;
+      const c = pick(npcs);
+      if (c) {
+        const foe = npcs.find(o => o !== c && HOUSE.pos[o.id] && HOUSE.pos[o.id].room === HOUSE.pos[c.id].room && rel(c, o) < -30);
+        const mood = foe ? ['💢'] : c.soc.drama >= 7 ? MOODS.drama : c.soc.charm >= 8 ? MOODS.charm : c.soc.strat >= 8 ? MOODS.strat : MOODS.any;
+        HOUSE.bubbles[c.id] = { t: pick(mood), until: now + 2200 };
+        if (foe) HOUSE.bubbles[foe.id] = { t: '💢', until: now + 2200 };
+      }
+    }
+    const people = npcs.map(c => ({ c, p: HOUSE.pos[c.id] })).filter(o => o.p).sort((a, b) => a.p.y - b.p.y);
+    const drawP = (c, X, Y, ring) => {
+      const bob = Math.sin(now / 260 + X) * 1.5;
+      x.fillStyle = 'rgba(0,0,0,.35)'; x.beginPath(); x.ellipse(X, Y + 17, 13, 4, 0, 0, 6.283); x.fill();
+      x.beginPath(); x.arc(X, Y + bob, 19, 0, 6.283); x.fillStyle = ring; x.fill();
+      x.beginPath(); x.arc(X, Y + bob, 16, 0, 6.283); x.fillStyle = c.color; x.fill(); x.lineWidth = 2.5; x.strokeStyle = '#0B0B0E'; x.stroke();
+      const t = c.isYou ? 'TU' : initials(c.name); x.font = '800 13px Display, system-ui'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.lineJoin = 'round'; x.lineWidth = 3; x.strokeText(t, X, Y + bob + 1); x.fillStyle = '#fff'; x.fillText(t, X, Y + bob + 1);
+      x.font = '800 10px system-ui, sans-serif'; x.lineWidth = 3; x.strokeStyle = 'rgba(11,11,14,.85)'; const n = c.isYou ? 'Tu' : c.sn; x.strokeText(n, X, Y + 30); x.fillStyle = '#F4F1EA'; x.fillText(n, X, Y + 30);
+    };
+    for (const { c, p } of people) {
+      drawP(c, p.x, p.y, relCol(rel(G.you, c)));
+      if (G.rivalKnown && c.id === G.rival) emo('🎯', p.x + 16, p.y - 16, 13); else if (allied(G.you, c)) emo('🤝', p.x + 16, p.y - 16, 13);
+      const b = HOUSE.bubbles[c.id];
+      if (b && b.until > now) { const bx0 = p.x, by0 = p.y - 34; x.fillStyle = '#F4F1EA'; x.beginPath(); x.roundRect ? x.roundRect(bx0 - 16, by0 - 14, 32, 26, 9) : x.rect(bx0 - 16, by0 - 14, 32, 26); x.fill(); x.beginPath(); x.moveTo(bx0 - 4, by0 + 11); x.lineTo(bx0, by0 + 17); x.lineTo(bx0 + 4, by0 + 11); x.fill(); emo(b.t, bx0, by0 - 1, 15); }
+    }
+    drawP(G.you, me.x, me.y, '#FFD60A');
+    requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
 }
 
 /* ---------- dimineața: acțiuni sociale ---------- */
@@ -868,11 +1051,13 @@ async function morning(maxAp = 3) {
         <div class="pips">${Array.from({ length: maxAp }, (_, i) => `<i class="${i >= G.ap ? 'used' : ''}"></i>`).join('')}</div></div>
       ${G.news.length ? `<div class="news">${G.news.map(n => `<div>${n}</div>`).join('')}</div>` : ''}
       ${G.offers.filter(id => byId(id).alive).map(id => { const c = byId(id); return `<div class="offer">${av(c, 'sm')}<div class="t"><b>${esc(c.sn)}</b> îți propune alianță.</div><button class="btn green" data-act="oy" data-id="${id}">DA</button><button class="btn paper" data-act="on" data-id="${id}">NU</button></div>`; }).join('')}
-      <div class="grid3">${npcs.map(c => { const r = rel(G.you, c); return `<div class="tile ${G.ap ? '' : 'dim'}" data-act="npc" data-id="${c.id}">${G.rivalKnown && c.id === G.rival ? '<span class="badge">🎯</span>' : allied(G.you, c) ? '<span class="badge">🤝</span>' : ''}${av(c)}<div class="nm">${esc(c.sn)}</div><div class="tg">${esc(c.tag)}</div>${relBar(r)}</div>`; }).join('')}</div>
+      <canvas id="house" class="house-cv" aria-label="Casa văzută de sus. Atinge un concurent ca să interacționezi."></canvas>
+      <div class="small muted center" style="margin-top:-4px">Atinge un concurent. Inelul arată ce crede despre tine: <b class="g">verde</b> te place, <b class="r">roșu</b> nu. 🎥 = confesionalul.</div>
       <button class="btn paper" data-act="conf" ${G.ap ? '' : 'disabled'}>🎥 CONFESIONAL<span class="sub">Afli cine vrea să te nominalizeze · +6K 🔥</span></button>
       <button class="btn ghost sm" data-act="map">🕸️ HARTA CASEI · cine cu cine (gratis)</button>
       <button class="btn ${G.ap ? '' : 'pulse'}" data-act="done">${G.day === 8 ? 'LA FINALĂ →' : 'LA PROBĂ →'}</button>
     </div>`);
+    const hc = $('#house'); if (hc) houseScene(hc);
     const r = await waitAct();
     if (r.act === 'done') { G.offers = []; G.news = []; return; }
     if (r.act === 'oy' || r.act === 'on') {
@@ -920,7 +1105,7 @@ async function doSocial(c, a) {
     if (Math.random() < allyChance(c)) { G.allies.add(rk('you', c.id)); dRel(c, 10); line = pick(GEN.allyYes); sfx.ding(); }
     else { dRel(c, -6); line = pick(GEN.allyNo); sfx.wrong(); }
   } else if (a === 'peace') {
-    if (Math.random() < peaceChance(c)) { G.rival = null; G.stats.peace = 1; dRel(c, 25); line = 'Bine... poate am exagerat. Pace. 🕊️'; sfx.win(); }
+    if (Math.random() < peaceChance(c)) { G.rival = null; G.stats.peace = 1; dRel(c, 25); recap(`🕊️ Ai făcut pace cu rivalul tău, <b>${esc(c.sn)}</b>`); line = 'Bine... poate am exagerat. Pace. 🕊️'; sfx.win(); }
     else { dRel(c, -5); line = pick(['Pace? Visezi.', 'Mai încearcă. Poate mâine.', 'Frumos din partea ta. Tot nu.']); sfx.wrong(); }
   } else if (a === 'drama') {
     G.stats.dramas++;
@@ -1136,6 +1321,7 @@ async function challengePhase() {
   // NPC-urile își „joacă” proba în paralel (pentru frânghie trebuie știute dinainte)
   const field = seeded(G.seed + G.day * 7919, () => aliveNPC().map(c => ({ c, s: g.npc(c) })));
   let mine;
+  musicWant(false);
   if (DEBUG) mine = g.dbg();
   else { await countdown(); mine = await g.run({ field }); }
   let note = '';
@@ -1144,6 +1330,7 @@ async function challengePhase() {
   delete G.fx.rested; delete G.fx.tired;
   const all = [{ c: G.you, s: mine }, ...field].sort((a, b) => g.low ? a.s - b.s : b.s - a.s);
   const winner = all[0].c; winner.wins++; G.dayWinner = winner.id;
+  recap(winner.isYou ? `👑 Ai câștigat proba <b>${g.name}</b>` : `👑 <b>${esc(winner.sn)}</b> a câștigat proba ${g.name}`);
   let immune = winner;
   if (winner.isYou && G.fx.noImm) immune = all[1].c;
   delete G.fx.noImm;
@@ -1156,6 +1343,7 @@ async function challengePhase() {
     <button class="btn" data-act="go">${winner.isYou ? 'AI CÂȘTIGAT! ALEGE PREMIUL →' : 'MAI DEPARTE →'}</button>
   </div>`);
   if (myPos === 1) { sfx.win(); confetti(); } else if (myPos <= 3) sfx.ding(); else sfx.lose();
+  musicWant(true);
   await waitAct();
   await prizePhase(winner);
 }
@@ -1181,7 +1369,7 @@ async function prizePhase(w) {
       addRel('you', v, -30); for (const o of aliveNPC()) if (allied(o, v)) addRel('you', o, -8);
       if (allied('you', v)) G.allies.delete(rk('you', v.id));
       dHype(15); fxHtml(); sfx.steal(); shake(); G.stats.steals++;
-      toast(`😈 Ai furat ${p.e} de la ${esc(v.sn)}!`);
+      toast(`😈 Ai furat ${p.e} de la ${esc(v.sn)}!`); recap(`😈 Ai furat ${p.e} ${esc(p.n)} de la <b>${esc(v.sn)}</b>`);
     }
     await sleep(900);
     return;
@@ -1193,6 +1381,7 @@ async function prizePhase(w) {
   if (best && Math.random() < .8) {
     const v = byId(best.owner);
     give(todayObj, v); G.prizes.push(todayObj); give(best, w); addRel(w, v, -25); w.hype += 10;
+    recap(`😈 <b>${esc(w.sn)}</b> ${v.isYou ? 'ți-a furat' : 'i-a furat lui ' + esc(v.sn)} ${best.e} ${esc(best.n)}`);
     const isMe = v.isYou;
     html = `<div class="stack center"><div class="label">😈 FURT!</div>
       <div class="row" style="justify-content:center;gap:18px">${av(w, 'lg')}<div style="font-size:40px">${best.e}</div>${av(v, 'lg')}</div>
@@ -1293,6 +1482,7 @@ async function elimination(round2 = false) {
     <div class="live" id="live"></div>
     <button class="btn" data-act="go" id="vgo" style="visibility:hidden">CONTINUĂ</button>
   </div>`);
+  musicWant(false);
   const stopChat = liveChat($('#live'), [A, B]);
   const T = DEBUG ? 50 : 4200, t0 = performance.now();
   await new Promise(res => {
@@ -1320,6 +1510,7 @@ async function elimination(round2 = false) {
   loser.alive = false; G.elim.push(loser);
   const rivalOut = loser.id === G.rival;
   if (rivalOut) { G.rival = null; G.stats.nemesis = 1; dHype(30); }
+  recap(`👋 <b>${esc(loser.sn)}</b> a fost eliminat de public${rivalOut ? ' (era rivalul tău)' : ''}`);
   G.grudge[loser.id] = votes.filter(x => x.t === loser).map(x => x.v.id);
   if (G.offers.includes(loser.id)) G.offers = G.offers.filter(x => x !== loser.id);
   show(`<div class="stack center"><div class="label">👋 Despărțire</div>${av(loser, 'xl', true)}
@@ -1328,6 +1519,7 @@ async function elimination(round2 = false) {
     ${rivalOut ? `<div class="panel"><b class="y">🎯 Rivalul tău a plecat acasă!</b>${fxHtml()}</div>` : ''}
     <div class="small muted">${G.grudge[loser.id].includes('you') ? '⚠️ Știe că tu ai votat-o/l. Va fi în juriu.' : 'Va face parte din juriul finalei.'}</div>
     <button class="btn" data-act="go">NOAPTEA ÎN CASĂ →</button></div>`);
+  musicWant(true);
   await waitAct();
   return null;
 }
@@ -1367,16 +1559,18 @@ async function chipNight() {
     <button class="btn red" data-act="go">STING LUMINA</button>
   </div>`);
   await waitAct();
+  musicWant(false);
   const hard = !!G.chipSeen; G.chipSeen = true;
   const ok = DEBUG ? Math.random() < .6 : await nightGame(hard);
   if (ok) {
-    G.card++; dHype(60); G.stats.chip++;
+    G.card++; dHype(60); G.stats.chip++; recap('👹 Ai scăpat de chipăruș. Singurul care n-a țipat.');
     show(`<div class="stack center"><div class="label g">🌅 Dimineața</div><div style="font-size:80px">😮‍💨</div><h2 class="display" style="font-size:32px">Ai supraviețuit nopții!</h2>${host('Ești singurul care n-a țipat. Ai câștigat o <b>Carte de salvare</b>.')}${fxHtml()}<div class="deltas"><span class="d up">+1 🃏</span></div><button class="btn" data-act="go">CONTINUĂ</button></div>`);
     sfx.win();
   } else {
-    dHype(20); dFx('tired');
+    dHype(20); dFx('tired'); recap('😱 Chipărușul te-a prins. Țipătul tău e deja meme.');
     show(`<div class="stack center"><div class="label r">🌅 Dimineața</div><div style="font-size:80px">😱</div><h2 class="display" style="font-size:32px">Te-a prins!</h2>${host('Țipătul tău e deja meme pe TikTok. Măcar e content.')}${fxHtml()}<button class="btn" data-act="go">CONTINUĂ</button></div>`);
   }
+  musicWant(true);
   await waitAct();
 }
 function nightGame(hard = false) {
@@ -1510,7 +1704,9 @@ async function finale() {
   await waitAct();
   delete G.fx.rested; delete G.fx.tired;
   const field = seeded(G.seed + 8 * 7919, () => aliveNPC().map(c => ({ c, s: g.npc(c) })));
+  musicWant(false);
   const mine = DEBUG ? g.dbg() : (await countdown(), await g.run({ field }));
+  musicWant(true);
   const all = [{ c: G.you, s: mine }, ...field].sort((a, b) => g.low ? a.s - b.s : b.s - a.s);
   const top = all.slice(0, 2).map(x => x.c);
   show(`<div class="stack"><div class="label">${g.icon} ${g.name} · rezultate</div>
@@ -1533,6 +1729,7 @@ async function finale() {
     <div class="live" id="live"></div>
     <button class="btn" data-act="go" id="jgo" style="visibility:hidden">REZULTATUL</button>
   </div>`);
+  musicWant(false);
   const stopChat = liveChat($('#live'), [F1, F2]);
   let c1 = 0, c2 = 0;
   for (const b of shuffle(ballots)) {
@@ -1590,6 +1787,7 @@ async function endScreen() {
     <div class="panel stack"><div class="label">Insignele tale · ${owned.length}/${ACH.length}</div><div class="badges">${ACH.map(a => `<div class="bdg ${owned.includes(a.id) ? '' : 'off'}" title="${esc(a.d)}"><i>${a.e}</i>${owned.includes(a.id) ? a.n : esc(a.d)}</div>`).join('')}</div></div>
   </div>`);
   if (p === 1) { sfx.win(); confetti(220); } else sfx.lose();
+  setTimeout(() => musicWant(true), 1500);
   if (fresh.length) setTimeout(() => { sfx.ding(); vib(80); }, 700);
   while (true) {
     const r = await waitAct();
@@ -2191,6 +2389,7 @@ async function season() {
   const m = await titleScreen(), ed = edOf(m.seed);
   applyEd(ed);
   await setupScreen(ed, m);
+  musicStop(); musicWant(true);
   await introScreen();
   for (G.day = 1; G.day <= 7; G.day++) {
     G.today = { ...ED().prizes[G.day - 1] };

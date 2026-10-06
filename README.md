@@ -20,6 +20,8 @@ Set `voiceover` to `"vo/day1.mp3"` (the file goes in `public/vo/`).
 ## Buzz House: Sezonul Tău (fan game)
 `game/index.html` is a self-contained mobile game (no build, no dependencies, fonts inlined). Open it in any browser.
 - 8 days: morning social actions → house event → daily challenge → prize steal → nominations → public vote with live chat.
+- The morning is a live top-down house (kitchen, bedroom, living, confesional, edition-specific yard) where contestants wander, react and argue; tap anyone to interact.
+- Each day opens as a TV episode card with a "previously on" recap; a generated trap beat plays between challenges (different tempo and key per edition).
 - Every season is a different edition (Clasică, Winter, Vila din Pădure, Vară) with its own rules, prizes, events and animated background.
 - 3 of 6 Selly twists per season (secret contestant, double elimination, prize swap, comeback, immunity for sale, house leader).
 - 14 challenges, 7 random ones per season: BUZZ!, quiz, math, memory, likes, rope, "Cine a zis-o?", TikTok Dance, Paparazzi, Cronometrul, Turnul de pahare, Unde e intrusul?, Banii lui Selly, Fuga de paparazzi.
