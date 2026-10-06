@@ -24,5 +24,8 @@ Set `voiceover` to `"vo/day1.mp3"` (the file goes in `public/vo/`).
 - 3 of 6 Selly twists per season (secret contestant, double elimination, prize swap, comeback, immunity for sale, house leader).
 - 9 challenges, 7 per season: BUZZ!, quiz, math, memory, likes, rope, "Cine a zis-o?", TikTok Dance, Paparazzi.
 - Chipăruș stealth night (twice in the forest edition). Finale: rope endurance, then a jury of eliminated contestants.
-- Between seasons it remembers your record, history and 12 badges; the end screen makes a 1080x1920 story card.
+- Between seasons it remembers your record, history and 15 badges; the end screen makes a 1080x1920 story card.
+- Every season comes from a seed: "Sezonul zilei" is the same season for everyone that day, and `game/#s<seed>p<points>` links challenge a friend to the exact same season.
+- A secret rival targets you each season (revealed on day 2); you can get them eliminated or make peace. The house map shows alliances and feuds.
+- On GitHub Pages it has link previews (`game/og.png`), a web app manifest and an offline service worker (`game/sw.js`).
 - Add `#debug` to the URL to auto-resolve challenges (used for automated playthroughs).
