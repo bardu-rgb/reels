@@ -22,10 +22,10 @@ Set `voiceover` to `"vo/day1.mp3"` (the file goes in `public/vo/`).
 - 8 days: morning social actions → house event → daily challenge → prize steal → nominations → public vote with live chat.
 - Every season is a different edition (Clasică, Winter, Vila din Pădure, Vară) with its own rules, prizes, events and animated background.
 - 3 of 6 Selly twists per season (secret contestant, double elimination, prize swap, comeback, immunity for sale, house leader).
-- 9 challenges, 7 per season: BUZZ!, quiz, math, memory, likes, rope, "Cine a zis-o?", TikTok Dance, Paparazzi.
-- Chipăruș stealth night (twice in the forest edition). Finale: rope endurance, then a jury of eliminated contestants.
+- 14 challenges, 7 random ones per season: BUZZ!, quiz, math, memory, likes, rope, "Cine a zis-o?", TikTok Dance, Paparazzi, Cronometrul, Turnul de pahare, Unde e intrusul?, Banii lui Selly, Fuga de paparazzi.
+- Chipăruș stealth night (twice in the forest edition). Finale: Selly's wheel picks a surprise challenge, then the final council (jurors ask questions; answers that match each juror's personality win votes), then the jury vote.
 - Between seasons it remembers your record, history and 15 badges; the end screen makes a 1080x1920 story card.
-- Every season comes from a seed: "Sezonul zilei" is the same season for everyone that day, and `game/#s<seed>p<points>` links challenge a friend to the exact same season.
+- Opening the game always offers a fresh random season. Every season still comes from a seed, so "Sezonul zilei" (optional) is the same for everyone that day and `game/#s<seed>p<points>` links challenge a friend to the exact same season.
 - A secret rival targets you each season (revealed on day 2); you can get them eliminated or make peace. The house map shows alliances and feuds.
 - On GitHub Pages it has link previews (`game/og.png`), a web app manifest and an offline service worker (`game/sw.js`).
 - Add `#debug` to the URL to auto-resolve challenges (used for automated playthroughs).

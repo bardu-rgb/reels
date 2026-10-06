@@ -237,6 +237,24 @@ input.name:focus{border-color:var(--yellow);box-shadow:0 0 0 3px var(--ink)}
 #confetti{position:absolute;inset:0;z-index:35;pointer-events:none}
 .shake{animation:shk .4s}
 @keyframes shk{0%,100%{transform:none}20%{transform:translate(-7px,3px)}40%{transform:translate(6px,-4px)}60%{transform:translate(-5px,-2px)}80%{transform:translate(4px,3px)}}
+/* probele noi */
+.tall-cv{width:100%;height:min(56dvh,520px);min-height:320px;border-radius:18px;background:var(--ink2);border:3px solid var(--ink3);touch-action:none}
+.stopw{font-family:Anton;font-size:88px;line-height:1;text-align:center;letter-spacing:2px;color:var(--yellow);margin-top:14px;font-variant-numeric:tabular-nums}
+.stopw.hid{color:var(--muted)}
+.oddgrid{display:grid;gap:6px}
+.oddc{aspect-ratio:1;max-width:100%;background:var(--ink2);border:2px solid var(--ink3);border-radius:12px;display:grid;place-items:center;padding:0;cursor:pointer;line-height:1;touch-action:manipulation}
+.oddc.bad{background:var(--red)}
+.vault{text-align:center;background:var(--ink2);border:3px dashed var(--yellow);border-radius:20px;padding:22px 12px;margin-top:6px}
+.vault-amt{font-family:Anton;font-size:64px;color:var(--yellow);line-height:1.1}
+.vault-amt.pop-in{animation:stamp .35s both}
+.riskbar{height:14px;border-radius:8px;background:var(--ink3);overflow:hidden}
+.riskbar i{display:block;height:100%;background:linear-gradient(90deg,var(--yellow),var(--red))}
+.wheel{position:relative;background:var(--ink2);border:4px solid var(--yellow);border-radius:22px;height:132px;display:grid;place-items:center;overflow:hidden}
+.wheel .wi{font-family:Anton;font-size:34px;letter-spacing:1px;text-align:center;line-height:1.1}
+.wheel .wi span{display:block;font-size:52px;line-height:1.1}
+.wheel.done{animation:pulse .5s 3}
+.juror{display:flex;gap:10px;align-items:center}
+.ans .btn{text-align:left;font-size:16px}
 /* fundal animat, diferit pe fiecare ediție */
 #bgfx{position:absolute;inset:0;z-index:0;pointer-events:none}
 .screen{position:relative;z-index:1}
@@ -442,7 +460,7 @@ const DAY_LINES = [
   'Ziua 5. Premiile devin serioase. Și furturile la fel.',
   'Ziua 6. Doar cei mai buni rămân. Sau cei mai urmăriți.',
   'Ziua 7. Ultima eliminare înainte de finală. <b>Nu greși acum.</b>',
-  '<b>FINALA.</b> O frânghie. Un juriu. Un singur câștigător.',
+  '<b>FINALA.</b> O probă surpriză. Un juriu. Un singur câștigător.',
 ];
 
 /* ---------- ediții: fiecare sezon e altă ediție ---------- */
@@ -678,8 +696,8 @@ function newGame(name, arch, ed, m) {
       addRel(a, you, ri(-8, 12));
       for (const b of npcs) if (a.id < b.id) addRel(a, b, ri(-15, 25));
     }
-    // 7 probe din 9; frânghia apare mereu (e și finala), „Cine a zis-o?” nu în primele două zile
-    const s = shuffle([...shuffle(['buzz', 'quiz', 'math', 'memory', 'likes', 'quote', 'dance', 'mole']).slice(0, 6), 'rope']);
+    // 7 probe din 14, altele în fiecare sezon; „Cine a zis-o?” nu în primele două zile (încă nu-i cunoști)
+    const s = shuffle(Object.keys(GAMES)).slice(0, 7);
     const qi = s.indexOf('quote'); if (qi > -1 && qi < 2) { [s[qi], s[4]] = [s[4], s[qi]]; }
     G.schedule = s;
     G.twists = planTwists();
@@ -743,10 +761,11 @@ async function titleScreen() {
   G = null; hud();
   const best = store.get('bh-best', null), n = store.get('bh-n', 0) + 1, hist = store.get('bh-hist', []), ach = store.get('bh-ach', []);
   const ch = challengeFromHash(), day = todaySeason(), daily = store.get('bh-daily', {});
-  let fs = store.get('bh-nextseed', null);
-  if (typeof fs !== 'number') { fs = n === 1 ? freeSeed(null, 'classic') : freeSeed(null); store.set('bh-nextseed', fs); }
+  // de fiecare dată când deschizi jocul: alt sezon, altă ediție decât ultima jucată
+  const lastEd = hist.length ? hist[hist.length - 1].ed : null;
+  const fs = n === 1 ? freeSeed(null, 'classic') : freeSeed(lastEd);
   const D = EDITIONS[edOf(day.seed)], F = EDITIONS[edOf(fs)], C = ch ? EDITIONS[edOf(ch.seed)] : null;
-  applyEd(edOf(ch ? ch.seed : day.seed));
+  applyEd(edOf(ch ? ch.seed : fs));
   const playedToday = daily.no === day.no;
   show(`<div class="title">
     <div class="kicker">FAN GAME NEOFICIAL</div>
@@ -755,11 +774,12 @@ async function titleScreen() {
     ${C ? `<div class="edition"><div class="label">⚔️ Ai fost provocat</div><div class="en">${C.emoji} ${C.name}</div>
       <div class="er">${ch.target ? `Cineva a făcut <b class="y">${ch.target}</b> puncte în exact sezonul ăsta. Îl bați?` : 'Cineva ți-a trimis exact sezonul jucat de el.'}</div>
       <button class="btn pulse" data-act="challenge" style="margin-top:8px">ACCEPT PROVOCAREA ⚔️</button></div>` : ''}
-    <div class="edition"><div class="label">📅 Sezonul zilei #${day.no}</div><div class="en">${D.emoji} ${D.name}</div><div class="es">${D.sub}</div>
-      <div class="er">Azi toată lumea joacă exact același sezon: aceiași concurenți, aceleași twist-uri, aceiași adversari. ${playedToday ? `Cel mai bun rezultat al tău azi: <b class="y">#${daily.place} · ${daily.pts} p</b>` : 'Compară-te cu prietenii.'}</div>
-      <button class="btn ${C ? 'paper' : 'pulse'}" data-act="daily" style="margin-top:8px">${playedToday ? 'MAI ÎNCEARCĂ O DATĂ' : 'JOACĂ SEZONUL ZILEI'}</button></div>
-    <div class="edition"><div class="label">🎲 Sezon liber · sezonul tău ${n}</div><div class="en">${F.emoji} ${F.name}</div><div class="es">${F.sub}</div><div class="er">${F.rule}</div>
-      <button class="btn paper" data-act="free" style="margin-top:8px">SEZON LIBER</button></div>
+    <div class="edition"><div class="label">🎲 Sezonul tău ${n} · nou de fiecare dată</div><div class="en">${F.emoji} ${F.name}</div><div class="es">${F.sub}</div><div class="er">${F.rule}</div>
+      <div class="small muted" style="margin-top:4px">Alți concurenți, alte probe, alte twist-uri, alt rival.</div>
+      <button class="btn ${C ? 'paper' : 'pulse'}" data-act="free" style="margin-top:8px">JOACĂ</button></div>
+    <div class="edition" style="border-color:var(--ink3)"><div class="label">📅 Sezonul zilei #${day.no} · ${D.emoji} ${D.name}</div>
+      <div class="er small">Același sezon pentru toți jucătorii, azi. ${playedToday ? `Rezultatul tău: <b class="y">#${daily.place} · ${daily.pts} p</b>` : 'Ca să te compari cu prietenii.'}</div>
+      <button class="btn ghost sm" data-act="daily" style="margin-top:6px">${playedToday ? 'MAI ÎNCEARCĂ SEZONUL ZILEI' : 'JOACĂ SEZONUL ZILEI'}</button></div>
     <button class="btn ghost sm" data-act="install" id="inst" ${installPrompt ? '' : 'hidden'}>📲 INSTALEAZĂ PE TELEFON</button>
     ${best ? `<div class="small muted">Record: <b class="y">${best.score}</b> puncte · Insigne: <b class="y">${ach.length}/${ACH.length}</b></div>` : ''}
     ${hist.length ? `<div class="hist">${hist.slice(-5).reverse().map(h => `<span>${EDITIONS[h.ed] ? EDITIONS[h.ed].emoji : ''} ${h.daily ? 'Z' + h.daily : 'S' + h.n} · #${h.place}</span>`).join('')}</div>` : ''}
@@ -805,7 +825,7 @@ async function introScreen() {
       <div><b class="y">☀️ Dimineața</b> ai 3 acțiuni: vorbești, faci TikTok-uri, propui alianțe sau începi scandaluri.</div>
       <div><b class="y">🎯 Proba zilei</b>: câștigătorul ia <b>imunitate</b> și alege: premiul zilei sau <b>FURĂ</b> premiul altcuiva.</div>
       <div><b class="y">🌙 Seara</b>: nominalizări. Cei mai votați doi ajung la <b>votul publicului</b>. Urmăritorii 🔥 te salvează.</div>
-      <div><b class="y">🏁 Finala</b>: Frânghia. Ultimii doi ajung în fața <b>juriului</b> format din cei eliminați.</div>
+      <div><b class="y">🏁 Finala</b>: Roata lui Selly alege o probă surpriză. Primii doi ajung la <b>Consiliul final</b>, unde juriul format din cei eliminați îi întreabă și apoi votează.</div>
       <div><b class="y">⚡ Twist-uri</b>: Selly are 3 surprize pregătite. Nu știi în ce zi vin.</div>
       <div><b class="y">🎯 Rivalul</b>: cineva din casă te-a luat deja la țintă. Afli cine în ziua 2.</div>
       <div><b class="y">${ED().emoji} Regula ediției</b>: ${ED().rule}</div>
@@ -1087,6 +1107,17 @@ const GAMES = {
     npc: c => Math.max(10, Math.round(36 * (.9 + c.st.refl * .17) + gauss() * 6)), fmt: s => s + ' p', run: gameDance, dbg: () => ri(55, 95) },
   mole: { name: 'PAPARAZZI', icon: '📸', desc: 'Paparazzii apar la ferestrele vilei. Prinde-i 📸 (+1) și pe Selly ⭐ (+3), dar nu-ți alunga fanii 🙋 (−2). 20 de secunde.',
     npc: c => Math.max(5, Math.round(10 + c.st.refl * 2.2 + gauss() * 4)), fmt: s => s + ' 📸', run: gameMole, dbg: () => ri(18, 34) },
+  stop: { name: 'CRONOMETRUL', icon: '⏱️', low: true, desc: 'Pornești cronometrul și îl oprești la exact <b>10,00 secunde</b>. Doar că după 3 secunde cifrele dispar. 3 runde, contează abaterea totală.',
+    npc: c => Math.round([0, 1, 2].reduce(a => a + (150 + (10 - c.st.refl) * 45) * rnd(.4, 1.6), 0)), fmt: s => Math.round(s) + ' ms', run: gameStop, dbg: () => ri(300, 1500) },
+  stack: { name: 'TURNUL DE PAHARE', icon: '🥤', desc: 'Paharul alunecă stânga-dreapta. Atinge ca să-l pui peste cel de dedesubt. Ce iese pe margine se taie, deci turnul se îngustează. Cât de sus ajungi?',
+    npc: c => Math.max(3, Math.round(6 + c.st.refl * 1.5 + gauss() * 3)), fmt: s => s + ' pahare', run: gameStack, dbg: () => ri(8, 24) },
+  odd: { name: 'UNDE E INTRUSUL?', icon: '🔍', desc: 'Un singur emoji e diferit de restul. Găsește-l cât mai repede. Grila crește la fiecare două nivele. 25 de secunde.',
+    npc: c => Math.max(2, Math.round(4 + c.st.know * .9 + gauss() * 2)), fmt: s => s + ' găsite', run: gameOdd, dbg: () => ri(5, 14) },
+  push: { name: 'BANII LUI SELLY', icon: '💣', desc: '3 runde de plicuri cu bani. Cu fiecare plic deschis crește șansa să dai de bomba lui Selly și să pierzi tot din runda aia. Știi când să te oprești?',
+    npc: c => { let s = 0; for (let r = 0; r < 3; r++) { const k = 2 + Math.round(c.soc.strat / 3) + ri(-1, 1); let b = 0, bust = false; for (let p = 0; p < k; p++) { if (R() < Math.min(.9, .09 * p)) { bust = true; break; } b += ri(1, 5) * 100; } if (!bust) s += b; } return s; },
+    fmt: s => fmtE(s), run: gamePush, dbg: () => ri(8, 30) * 100 },
+  runner: { name: 'FUGA DE PAPARAZZI', icon: '🏃', desc: '25 de secunde pe trei benzi. Atinge în stânga sau în dreapta ca să schimbi banda. Prinde ❤️ și ⭐, ferește-te de 📸. Ai 3 vieți, iar fiecare viață rămasă face 3 puncte.',
+    npc: c => Math.max(4, Math.round(8 + c.st.refl * 2 + gauss() * 4)), fmt: s => s + ' p', run: gameRunner, dbg: () => ri(12, 32) },
 };
 
 async function challengePhase() {
@@ -1413,30 +1444,86 @@ function nightGame(hard = false) {
 }
 
 /* ---------- finala ---------- */
+/* ---------- consiliul final: juriul te întreabă ---------- */
+const COUNCIL = [
+  { q: f => `De ce ai merita tu marele premiu și nu ${f.sn}?`, a: { sincer: 'Pentru că am fost eu de la prima zi, fără mască.', strategic: 'Am câștigat probe, am făcut alianțele potrivite și am ajuns aici. Asta e jocul.', amuzant: 'Pentru că acum merg cu trotineta prin ploaie. Ajutați-mă.' } },
+  { q: () => 'Ce regreți cel mai mult din sezonul ăsta?', a: { sincer: 'Că am rănit niște oameni pe drum. Inclusiv pe tine.', strategic: 'Nimic. Fiecare mutare a avut un motiv.', amuzant: 'Sarmalele de marți. Îmi cer scuze public.' } },
+  { q: () => 'M-ai fi votat afară dacă puteai?', a: { sincer: 'Da. Și tu pe mine. Ne respectăm pentru asta.', strategic: 'Erai cea mai mare amenințare. Era logic.', amuzant: 'Niciodată. Cine ar mai fi spălat vasele?' } },
+  { q: () => 'Ai jucat un personaj sau ai fost tu?', a: { sincer: 'Am fost eu. Uneori asta a fost partea cea mai grea.', strategic: 'Toată lumea joacă un rol aici. Eu l-am jucat mai bine.', amuzant: 'Personajul meu e atât de bun că nici eu nu mai știu.' } },
+  { q: () => 'Ce faci cu premiul dacă îl iei?', a: { sincer: 'Îl împart cu familia mea. Ei m-au adus aici.', strategic: 'Îl transform în content. Peste un an valorează dublu.', amuzant: 'Îl parchez în fața casei lui Selly și claxonez.' } },
+  { q: () => 'Cine a fost cel mai fals din casă?', a: { sincer: 'Poate chiar eu, în unele zile. Recunosc.', strategic: 'Cine a pierdut. Falsitatea nu te duce în finală.', amuzant: 'Pizza congelată din frigider. Zicea că e italiană.' } },
+];
+const PREF = { sincer: '❤️ pune preț pe sinceritate', strategic: '🧠 respectă jocul strategic', amuzant: '😂 vrea să râdă' };
+const prefOf = j => j.soc.loyal >= 7 ? 'sincer' : j.soc.strat >= 8 ? 'strategic' : 'amuzant';
+async function council(F1, F2, jury) {
+  const me = F1.isYou ? F1 : F2, opp = F1.isYou ? F2 : F1, bonus = {}, oppBonus = {};
+  for (const j of jury) { bonus[j.id] = 0; oppBonus[j.id] = Math.random() < .25 + opp.soc.charm * .05 ? 14 : 0; }
+  const askers = shuffle(jury).slice(0, Math.min(3, jury.length)), qs = shuffle(COUNCIL);
+  for (let i = 0; i < askers.length; i++) {
+    const j = askers[i], q = qs[i], want = prefOf(j), opts = shuffle(Object.keys(q.a));
+    show(`<div class="stack">
+      <div class="label">🎙️ Consiliul final · întrebarea ${i + 1}/${askers.length}</div>
+      <div class="juror">${av(j, 'lg')}<div class="grow"><b>${esc(j.name)}</b><div class="small muted">${PREF[want]}</div></div></div>
+      <div class="say" style="font-size:19px">„${esc(q.q(opp))}”</div>
+      <div class="stack ans">${opts.map(t => `<button class="btn paper" data-act="ans" data-id="${t}">${esc(q.a[t])}</button>`).join('')}</div>
+    </div>`);
+    const r = await waitAct(), ok = r.id === want;
+    bonus[j.id] += ok ? 25 : -8;
+    for (const o of jury) if (o !== j && prefOf(o) === r.id) bonus[o.id] += 6;
+    ok ? sfx.ding() : sfx.wrong();
+    show(`<div class="stack center"><div class="juror" style="justify-content:center">${av(j, 'lg')}</div>
+      <div class="say">„${esc(ok ? pick(['Asta voiam să aud.', 'Ok. Asta m-a convins.', 'Respect. Chiar respect.']) : pick(['Hmm. Nu m-ai convins.', 'Serios? Asta e tot?', 'Am auzit răspunsuri mai bune azi.']))}”</div>
+      <div class="deltas" style="justify-content:center"><span class="d ${ok ? 'up' : 'down'}">${esc(j.sn)} ${ok ? '+25' : '−8'} pentru tine</span></div>
+      <button class="btn" data-act="go">${i < askers.length - 1 ? 'URMĂTOAREA ÎNTREBARE' : 'LA VOT →'}</button></div>`);
+    await waitAct();
+  }
+  return { bonus, oppBonus, me, opp };
+}
+
+async function wheelSpin(key) {
+  const keys = Object.keys(GAMES).filter(k => k !== 'rope');
+  show(`<div class="stack center"><div class="label">🎡 Roata lui Selly</div>
+    ${host('Proba finală n-o știe nimeni. Nici măcar eu. <b>Învârt roata!</b>')}
+    <div class="wheel" id="wh"><div class="wi" id="wi"></div></div>
+    <button class="btn" data-act="go" id="wgo" style="visibility:hidden">LA PROBA FINALĂ →</button></div>`);
+  const wi = $('#wi'), total = DEBUG ? 1 : 24; let delay = 45, i = ri(0, keys.length - 1);
+  for (let s = 0; s < total; s++) {
+    const k = s === total - 1 ? key : keys[i++ % keys.length];
+    wi.innerHTML = `<span>${GAMES[k].icon}</span>${GAMES[k].name}`; sfx.tick(); await sleep(delay); delay *= 1.13;
+  }
+  $('#wh').classList.add('done'); sfx.twist(); $('#wgo').style.visibility = 'visible';
+  await waitAct();
+}
+
 async function finale() {
   await morning(3);
-  const g = GAMES.rope;
+  const used = new Set(G.schedule), all9 = Object.keys(GAMES).filter(k => k !== 'rope');
+  const key = seeded(G.seed + 8 * 977, () => { const fresh = all9.filter(k => !used.has(k)); return pick(fresh.length ? fresh : all9); }), g = GAMES[key];
+  await wheelSpin(key);
+  const out = aliveAll().length - 2;
   show(`<div class="stack center">
-    <div class="label">🏁 Proba finală</div><div class="chal-icon">🪢</div>
-    <h1 class="impact" style="font-size:46px;color:var(--yellow)">FRÂNGHIA</h1>
-    ${host(`Toți ${aliveAll().length} vă agățați de frânghie. <b>${aliveAll().length - 2 === 1 ? 'Primul care cade, pleacă' : 'Primii ' + (aliveAll().length - 2) + ' care cad, pleacă'}.</b> Ultimii doi ajung în fața juriului.`)}
+    <div class="label">🏁 Proba finală</div><div class="chal-icon">${g.icon}</div>
+    <h1 class="impact" style="font-size:44px;color:var(--yellow)">${g.name}</h1>
+    ${host(`Sunteți ${aliveAll().length}. <b>${out === 1 ? 'Ultimul clasat pleacă' : 'Ultimii ' + out + ' pleacă'}.</b> Primii doi ajung în fața juriului.`)}
     <div class="panel" style="text-align:left;line-height:1.5">${g.desc}</div>
-    <button class="btn" data-act="go">LA FRÂNGHIE</button></div>`);
+    <button class="btn" data-act="go">SUNT GATA</button></div>`);
   await waitAct();
+  delete G.fx.rested; delete G.fx.tired;
   const field = seeded(G.seed + 8 * 7919, () => aliveNPC().map(c => ({ c, s: g.npc(c) })));
-  let mine = DEBUG ? g.dbg() : (await countdown(), await gameRope({ field, finale: true }));
-  const all = [{ c: G.you, s: mine }, ...field].sort((a, b) => b.s - a.s);
+  const mine = DEBUG ? g.dbg() : (await countdown(), await g.run({ field }));
+  const all = [{ c: G.you, s: mine }, ...field].sort((a, b) => g.low ? a.s - b.s : b.s - a.s);
   const top = all.slice(0, 2).map(x => x.c);
-  show(`<div class="stack"><div class="label">🪢 Frânghia · rezultate</div>
+  show(`<div class="stack"><div class="label">${g.icon} ${g.name} · rezultate</div>
     <div>${all.map((x, i) => `<div class="rank ${x.c.isYou ? 'you' : ''}" style="animation-delay:${(all.length - i) * .12}s"><span class="pos">${i + 1}</span>${av(x.c, 'sm')}<div class="nm">${esc(x.c.isYou ? who(x.c) : x.c.name)}<small>${i < 2 ? '✅ merge în fața juriului' : '❌ eliminat'}</small></div><span class="sc">${g.fmt(x.s)}</span></div>`).join('')}</div>
-    <button class="btn" data-act="go">${top.includes(G.you) ? 'ÎN FAȚA JURIULUI →' : 'MAI DEPARTE'}</button></div>`);
+    <button class="btn" data-act="go">${top.includes(G.you) ? 'CONSILIUL FINAL →' : 'MAI DEPARTE'}</button></div>`);
   top.includes(G.you) ? sfx.win() : sfx.lose();
   await waitAct();
   if (!top.includes(G.you)) { G.place = all.findIndex(x => x.c.isYou) + 1; return; }
   for (const x of all.slice(2)) { x.c.alive = false; G.elim.push(x.c); }
   const [F1, F2] = top;
   const jury = G.elim;
-  const score = (j, f) => rel(j, f) + (allied(j, f) ? 25 : 0) + f.wins * 4 + ((G.grudge[j.id] || []).includes(f.id) ? -18 : 0) + gauss() * 10;
+  const cs = await council(F1, F2, jury);
+  const score = (j, f) => rel(j, f) + (allied(j, f) ? 25 : 0) + f.wins * 4 + ((G.grudge[j.id] || []).includes(f.id) ? -18 : 0) + (f.isYou ? cs.bonus[j.id] : cs.oppBonus[j.id]) + gauss() * 10;
   const ballots = jury.map(j => ({ j, f: score(j, F1) >= score(j, F2) ? F1 : F2 }));
   show(`<div class="stack center">
     <div class="label">⚖️ Juriul</div>
@@ -1478,7 +1565,6 @@ async function endScreen() {
   if (isBest) store.set('bh-best', { score: pts, title });
   const hist = store.get('bh-hist', []); hist.push({ n, ed: G.ed, place: p, daily: G.dailyNo }); store.set('bh-hist', hist.slice(-12));
   const eds = [...new Set([...store.get('bh-eds', []), G.ed])]; store.set('bh-eds', eds);
-  if (G.mode === 'free') store.set('bh-nextseed', freeSeed(G.ed));
   if (G.mode === 'daily') { const d = store.get('bh-daily', {}); if (d.no !== G.dailyNo || pts > d.pts) store.set('bh-daily', { no: G.dailyNo, place: p, pts }); }
   const beat = G.target != null && pts > G.target;
   const s = { ...G.stats, beatTarget: beat, place: p, wins: y.wins, hype: y.hype, unan: !!G.unan, firstOut: !!G.firstOut, eds: eds.length,
@@ -1500,7 +1586,7 @@ async function endScreen() {
     ${mine.length || y.cash ? `<div class="panel" style="text-align:left"><div class="label">Pleci acasă cu</div>${mine.map(x => `<div style="margin-top:6px">${x.e} ${esc(x.n)} <span class="muted">· ${fmtE(x.v)}</span></div>`).join('')}${y.cash ? `<div style="margin-top:6px">💸 Bani din casă <span class="muted">· ${fmtE(y.cash)}</span></div>` : ''}</div>` : ''}
     <button class="btn" data-act="duel">⚔️ PROVOACĂ UN PRIETEN<span class="sub">Primește exact sezonul tău și trebuie să bată ${pts} de puncte</span></button>
     <button class="btn paper" data-act="card">📸 CARD PENTRU STORY</button>
-    <button class="btn ghost" data-act="again">ÎNAPOI LA MENIU</button>
+    <button class="btn ghost" data-act="again">🎲 JOACĂ ALT SEZON</button>
     <div class="panel stack"><div class="label">Insignele tale · ${owned.length}/${ACH.length}</div><div class="badges">${ACH.map(a => `<div class="bdg ${owned.includes(a.id) ? '' : 'off'}" title="${esc(a.d)}"><i>${a.e}</i>${owned.includes(a.id) ? a.n : esc(a.d)}</div>`).join('')}</div></div>
   </div>`);
   if (p === 1) { sfx.win(); confetti(220); } else sfx.lose();
@@ -1902,6 +1988,183 @@ async function gameMole() {
         }
       }
       state.forEach((s, i) => { if (s && el > s.until) { state[i] = null; cells[i].classList.remove('up'); } });
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  });
+}
+
+/* ---------- probele noi ---------- */
+function waitPress(el, maxMs) {
+  return new Promise(res => {
+    let done = false;
+    const fin = () => { if (done) return; done = true; el.removeEventListener('pointerdown', pd); removeEventListener('keydown', kd); res(); };
+    const pd = e => { e.preventDefault(); fin(); }, kd = e => { if (e.code === 'Space' && !e.repeat) { e.preventDefault(); fin(); } };
+    el.addEventListener('pointerdown', pd); addEventListener('keydown', kd);
+    if (maxMs) setTimeout(fin, maxMs);
+  });
+}
+function tallCanvas(id) {
+  const cv = $('#' + id), dpr = Math.min(2, devicePixelRatio || 1), W = cv.clientWidth, H = cv.clientHeight, x = cv.getContext('2d');
+  cv.width = W * dpr; cv.height = H * dpr; x.scale(dpr, dpr);
+  return { cv, x, W, H };
+}
+
+async function gameStop() {
+  const TARGET = 10, HIDE = 3; let total = 0;
+  for (let r = 1; r <= 3; r++) {
+    show(`<div class="mg"><div class="mg-top"><span class="pill">RUNDA ${r}/3</span><span class="pill big">${total} ms</span></div>
+      <div class="stopw" id="sw">0.00</div>
+      <div class="mg-hint" id="sh">Oprește la exact <b class="y">10.00</b>. După 3 secunde cifrele dispar și numeri în gând.</div>
+      <button class="buzzer wait" id="sb"><span>START</span></button></div>`);
+    const sb = $('#sb'), sw = $('#sw');
+    await waitPress(sb);
+    sb.className = 'buzzer go'; sb.firstChild.textContent = 'STOP'; sfx.go();
+    const t0 = performance.now(); let raf = 0;
+    const tick = () => { const t = (performance.now() - t0) / 1000; if (t < HIDE) sw.textContent = t.toFixed(2); else { sw.textContent = '?.??'; sw.classList.add('hid'); } raf = requestAnimationFrame(tick); };
+    tick();
+    await sleep(250);
+    await waitPress(sb, 16000);
+    const t = (performance.now() - t0) / 1000; cancelAnimationFrame(raf);
+    const err = Math.round(Math.abs(t - TARGET) * 1000); total += err;
+    sw.classList.remove('hid'); sw.textContent = t.toFixed(2);
+    sb.className = 'buzzer hit'; sb.firstChild.textContent = err < 100 ? 'PERFECT!' : err < 300 ? 'APROAPE' : err < 800 ? 'MEH' : 'VAI';
+    $('#sh').innerHTML = `Abatere: <b class="${err < 150 ? 'g' : err < 500 ? 'y' : 'r'}">${err} ms</b>`;
+    err < 150 ? sfx.win() : err < 500 ? sfx.ding() : sfx.wrong();
+    await sleep(1600);
+  }
+  return total;
+}
+
+async function gameStack() {
+  show(`<div class="mg"><div class="mg-top"><span class="pill big" id="kh">0 pahare</span><span class="pill" id="kp">Atinge oriunde</span></div>
+    <canvas id="kc" class="tall-cv"></canvas><div class="mg-hint">Pune paharul exact peste cel de dedesubt. Ce iese pe margine se taie.</div></div>`);
+  const { x, W, H } = tallCanvas('kc'), BH = 24, COL = ['#FFD60A', '#FF3B30', '#2BD96B', '#2F7BFF', '#FF5FA2', '#FF9F1C'];
+  const blocks = [{ x: W * .18, w: W * .64 }];
+  let cur = { x: 0, w: W * .64, dir: 1 }, speed = 150, cam = 0, over = false, flash = null, fall = null, last = performance.now();
+  return new Promise(resolve => {
+    const drop = e => {
+      if (e) { if (e.type === 'keydown' && (e.code !== 'Space' || e.repeat)) return; e.preventDefault(); }
+      if (over) return;
+      const prev = blocks[blocks.length - 1], l = Math.max(cur.x, prev.x), r = Math.min(cur.x + cur.w, prev.x + prev.w);
+      if (r - l <= 2) { over = true; fall = { x: cur.x, w: cur.w, y: 0, i: blocks.length }; sfx.boom(); return finish(); }
+      if (Math.abs(cur.x - prev.x) < 5) { blocks.push({ x: prev.x, w: prev.w }); flash = { t: performance.now(), txt: 'PERFECT' }; tone(1046, .12, 'triangle', .14); }
+      else { blocks.push({ x: l, w: r - l }); fall = { x: cur.x < prev.x ? cur.x : r, w: cur.w - (r - l), y: 0, i: blocks.length - 1 }; tone(440 + blocks.length * 18, .08, 'triangle', .12); }
+      const n = blocks.length - 1; $('#kh').textContent = n + (n === 1 ? ' pahar' : ' pahare');
+      const w = blocks[blocks.length - 1].w; cur = { x: n % 2 ? W - w : 0, w, dir: n % 2 ? -1 : 1 }; speed = Math.min(430, speed + 11);
+      if (w < 4 || n >= 60) { over = true; finish(); }
+    };
+    const finish = () => { screen.removeEventListener('pointerdown', drop); removeEventListener('keydown', drop); setTimeout(() => resolve(blocks.length - 1), 1100); };
+    screen.addEventListener('pointerdown', drop); addEventListener('keydown', drop);
+    const frame = now => {
+      const dt = Math.min(.05, (now - last) / 1000); last = now;
+      if (!over) { cur.x += cur.dir * speed * dt; if (cur.x < 0) { cur.x = 0; cur.dir = 1; } if (cur.x > W - cur.w) { cur.x = W - cur.w; cur.dir = -1; } }
+      const target = Math.max(0, blocks.length * BH - H * .55); cam += (target - cam) * Math.min(1, dt * 6);
+      x.clearRect(0, 0, W, H);
+      const yOf = i => H - 18 - (i + 1) * BH + cam;
+      blocks.forEach((b, i) => { x.fillStyle = i === 0 ? '#3a3a44' : COL[i % COL.length]; x.fillRect(b.x, yOf(i), b.w, BH - 3); if (i) { x.fillStyle = 'rgba(255,255,255,.25)'; x.fillRect(b.x, yOf(i), b.w, 4); } });
+      if (!over) { x.fillStyle = COL[blocks.length % COL.length]; x.fillRect(cur.x, yOf(blocks.length), cur.w, BH - 3); }
+      if (fall) { fall.y += 600 * dt; x.globalAlpha = Math.max(0, 1 - fall.y / 400); x.fillStyle = COL[fall.i % COL.length]; x.fillRect(fall.x, yOf(fall.i) + fall.y, fall.w, BH - 3); x.globalAlpha = 1; if (fall.y > 400) fall = null; }
+      if (flash && now - flash.t < 600) { x.globalAlpha = 1 - (now - flash.t) / 600; x.fillStyle = '#FFD60A'; x.font = '800 30px Display, system-ui'; x.textAlign = 'center'; x.fillText(flash.txt, W / 2, yOf(blocks.length) - 30); x.globalAlpha = 1; }
+      if (!over || fall) requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  });
+}
+
+const ODD = [['😀', '😃'], ['😐', '😑'], ['🙂', '🙃'], ['😂', '🤣'], ['😎', '🤓'], ['🐻', '🐨'], ['🍎', '🍅'], ['🚗', '🚙'], ['⭐', '🌟'], ['❤️', '🧡'], ['🔵', '🟣'], ['🥇', '🏅'], ['🐶', '🐺'], ['🍔', '🥪'], ['🌕', '🌝'], ['👻', '💀'], ['🧁', '🍰'], ['🎧', '🎤'], ['😺', '😸'], ['🌲', '🌳']];
+async function gameOdd() {
+  const T = 25; let found = 0, penalty = 0, done = false;
+  show(`<div class="mg"><div class="mg-top"><span class="pill big" id="ot">${T}.0s</span><span class="pill big" id="os">0 🔍</span></div>
+    <div class="mg-hint">Atinge emoji-ul diferit. Greșeala te costă 2 secunde.</div><div class="oddgrid" id="og"></div></div>`);
+  const grid = $('#og');
+  const level = () => {
+    const n = Math.min(7, 3 + Math.floor(found / 2)), [a, b] = pick(ODD), flip = Math.random() < .5, base = flip ? a : b, odd = flip ? b : a, k = ri(0, n * n - 1);
+    grid.style.gridTemplateColumns = `repeat(${n},1fr)`;
+    grid.innerHTML = Array.from({ length: n * n }, (_, i) => `<button class="oddc" data-o="${i === k ? 1 : 0}" style="font-size:calc(min(86vw,400px) / ${n} * .52)">${i === k ? odd : base}</button>`).join('');
+  };
+  level();
+  grid.addEventListener('pointerdown', e => {
+    const b = e.target.closest('.oddc'); if (!b || done) return; e.preventDefault();
+    if (b.dataset.o === '1') { found++; tone(760 + found * 40, .08, 'triangle', .12); $('#os').textContent = found + ' 🔍'; level(); }
+    else { penalty += 2; sfx.wrong(); b.classList.add('bad'); shake(grid); }
+  });
+  const start = performance.now();
+  return new Promise(resolve => {
+    const tick = () => { const left = T - (performance.now() - start) / 1000 - penalty; if (left <= 0) { done = true; $('#ot').textContent = '0.0s'; sfx.buzz(); setTimeout(() => resolve(found), 500); return; } $('#ot').textContent = left.toFixed(1) + 's'; requestAnimationFrame(tick); };
+    tick();
+  });
+}
+
+async function gamePush() {
+  let total = 0;
+  for (let r = 1; r <= 3; r++) {
+    let bank = 0, pulls = 0, last = null;
+    while (true) {
+      const risk = Math.min(.9, .09 * pulls);
+      show(`<div class="mg"><div class="mg-top"><span class="pill">RUNDA ${r}/3</span><span class="pill big">${fmtE(total)} încasat</span></div>
+        <div class="vault"><div class="small muted">în runda asta</div><div class="vault-amt ${last ? 'pop-in' : ''}">${fmtE(bank)}</div>${last ? `<div class="small g">+${fmtE(last)} din plic</div>` : '<div class="small muted">Deschide primul plic</div>'}</div>
+        <div class="riskbar"><i style="width:${risk * 100}%"></i></div>
+        <div class="mg-hint">Șansa ca următorul plic să fie <b class="r">💣 bomba lui Selly</b>: <b class="${risk > .3 ? 'r' : 'y'}">${Math.round(risk * 100)}%</b><br>Bomba îți ia tot ce ai strâns în runda asta.</div>
+        <div class="opts"><button class="opt" data-act="pull">✉️ MAI DESCHID UNUL</button><button class="opt" data-act="bank" ${bank ? '' : 'disabled'}>💰 ÎNCASEZ</button></div></div>`);
+      const a = await waitAct();
+      if (a.act === 'bank') { total += bank; sfx.win(); toast(`💰 +${fmtE(bank)}`); await sleep(700); break; }
+      pulls++;
+      if (Math.random() < risk) {
+        sfx.boom(); shake();
+        show(`<div class="mg center"><div style="font-size:110px;margin-top:30px">💣</div><h2 class="display" style="font-size:34px">BUM!</h2><div class="muted">Ai pierdut ${fmtE(bank)} din runda ${r}.</div></div>`);
+        await sleep(1500); break;
+      }
+      last = ri(1, 5) * 100; bank += last; tone(700 + pulls * 60, .09, 'triangle', .12);
+    }
+  }
+  return total;
+}
+
+async function gameRunner() {
+  const T = 25;
+  show(`<div class="mg"><div class="mg-top"><span class="pill big" id="rt2">${T}.0s</span><span class="pill" id="rl">❤️❤️❤️</span><span class="pill big" id="rs2">0 p</span></div>
+    <canvas id="rc2" class="tall-cv"></canvas><div class="mg-hint">Atinge în stânga sau în dreapta ca să schimbi banda. Prinde ❤️ ⭐, ferește-te de 📸.</div></div>`);
+  const { cv, x, W, H } = tallCanvas('rc2'), lw = W / 3, py = H - 70;
+  let lane = 1, px = lw * 1.5, lives = 3, score = 0, objs = [], spawn = .6, start = performance.now(), last = start, road = 0, hit = 0, done = false;
+  const move = d => { lane = clamp(lane + d, 0, 2); tone(500 + lane * 80, .04, 'square', .05); };
+  const pd = e => { e.preventDefault(); const r = cv.getBoundingClientRect(); move(e.clientX < r.left + r.width / 2 ? -1 : 1); };
+  const kd = e => { if (['ArrowLeft', 'KeyA'].includes(e.code)) { e.preventDefault(); move(-1); } if (['ArrowRight', 'KeyD'].includes(e.code)) { e.preventDefault(); move(1); } };
+  screen.addEventListener('pointerdown', pd); addEventListener('keydown', kd);
+  return new Promise(resolve => {
+    const end = () => { done = true; screen.removeEventListener('pointerdown', pd); removeEventListener('keydown', kd); sfx.buzz(); setTimeout(() => resolve(score + lives * 3), 600); };
+    const frame = now => {
+      if (done) return;
+      const dt = Math.min(.05, (now - last) / 1000); last = now; const el = (now - start) / 1000, k = Math.min(1, el / T);
+      if (el >= T || lives <= 0) return end();
+      $('#rt2').textContent = (T - el).toFixed(1) + 's';
+      const sp = H / (2.1 - 1.1 * k); road = (road + sp * dt) % 60;
+      spawn -= dt;
+      if (spawn <= 0) {
+        spawn = .62 - .3 * k; const r = Math.random();
+        objs.push({ lane: ri(0, 2), y: -30, k: r < .45 + k * .1 ? 'cam' : r < .9 ? 'like' : 'star' });
+        if (k > .4 && Math.random() < .35) objs.push({ lane: ri(0, 2), y: -90, k: 'cam' });
+      }
+      px += (lw * (lane + .5) - px) * Math.min(1, dt * 18);
+      x.clearRect(0, 0, W, H);
+      x.strokeStyle = 'rgba(255,255,255,.15)'; x.lineWidth = 3; x.setLineDash([26, 34]); x.lineDashOffset = -road;
+      for (const lx of [lw, lw * 2]) { x.beginPath(); x.moveTo(lx, 0); x.lineTo(lx, H); x.stroke(); }
+      x.setLineDash([]);
+      x.textAlign = 'center'; x.textBaseline = 'middle'; x.font = '34px system-ui, sans-serif';
+      for (let i = objs.length - 1; i >= 0; i--) {
+        const o = objs[i]; o.y += sp * dt;
+        if (o.lane === lane && Math.abs(o.y - py) < 32) {
+          objs.splice(i, 1);
+          if (o.k === 'cam') { lives--; hit = now; sfx.wrong(); vib(80); $('#rl').textContent = '❤️'.repeat(lives) + '🖤'.repeat(3 - lives); }
+          else { score += o.k === 'star' ? 3 : 1; tone(o.k === 'star' ? 1320 : 990, .06, 'sine', .1); $('#rs2').textContent = score + ' p'; }
+          continue;
+        }
+        if (o.y > H + 40) { objs.splice(i, 1); continue; }
+        x.fillText(o.k === 'cam' ? '📸' : o.k === 'star' ? '⭐' : '❤️', lw * (o.lane + .5), o.y);
+      }
+      const hurt = now - hit < 300;
+      x.beginPath(); x.arc(px, py, 26, 0, 6.283); x.fillStyle = hurt ? '#FF3B30' : G.you.color; x.fill(); x.lineWidth = 4; x.strokeStyle = '#0B0B0E'; x.stroke();
+      x.font = '800 24px Display, system-ui'; x.fillStyle = '#0B0B0E'; x.fillText((G.you.name[0] || '?').toUpperCase(), px, py + 1);
       requestAnimationFrame(frame);
     };
     requestAnimationFrame(frame);
