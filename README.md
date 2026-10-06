@@ -16,3 +16,9 @@ Without real footage you get the fallback backdrop. Real footage looks far bette
 
 ## Voice
 Set `voiceover` to `"vo/day1.mp3"` (the file goes in `public/vo/`).
+
+## Buzz House: Sezonul Tău (fan game)
+`game/index.html` is a self-contained mobile game (no build, no dependencies, fonts inlined). Open it in any browser.
+- 8 days: morning social actions → house event → daily challenge (BUZZ!, quiz, math, memory, likes, rope) → prize steal → nominations → public vote.
+- Night 4: "Noaptea Chipărușului" stealth event. Finale: rope endurance, then a jury of eliminated contestants.
+- Add `#debug` to the URL to auto-resolve challenges (used for automated playthroughs).
