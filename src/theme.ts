@@ -7,11 +7,19 @@ import {staticFile} from 'remotion';
 loadFont({family: 'LilitaOne', url: staticFile('fonts/LilitaOne.woff2')});
 loadFont({family: 'Anton', url: staticFile('fonts/Anton.woff2')});
 loadFont({family: 'JetBrainsMono', url: staticFile('fonts/JetBrainsMono-800.woff2'), weight: '800'});
+// Latin Extended subsets: Romanian ă ș ț (the base files above only carry basic Latin).
+const LATIN_EXT = 'U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF';
+loadFont({family: 'Anton', url: staticFile('fonts/Anton-ext.woff2'), unicodeRange: LATIN_EXT});
+loadFont({family: 'JetBrainsMono', url: staticFile('fonts/JetBrainsMono-800-ext.woff2'), weight: '800', unicodeRange: LATIN_EXT});
+// Lilita One has no ă/ș/ț at all, so Romanian videos use Baloo 2 ExtraBold as the chunky font.
+loadFont({family: 'Baloo2', url: staticFile('fonts/Baloo2-800.woff2'), weight: '800'});
+loadFont({family: 'Baloo2', url: staticFile('fonts/Baloo2-800-ext.woff2'), weight: '800', unicodeRange: LATIN_EXT});
 
 export const fonts = {
 	display: 'LilitaOne',
 	impact: 'Anton',
 	mono: 'JetBrainsMono',
+	rounded: 'Baloo2',
 };
 
 // Deliberately flat, high-contrast palette. No purple gradients, no glows:
