@@ -1449,7 +1449,7 @@ async function shareCard(info) {
   const url = c.toDataURL('image/png');
   openSheet(`<div class="stack center"><div class="label">📸 Cardul tău</div><img class="share-img" src="${url}" alt="Cardul cu rezultatul tău din sezon">
     <div class="small muted">Pe telefon: ține apăsat pe imagine și alege „Salvează”.</div>
-    <a class="btn" href="${url}" download="buzz-house.png" style="text-decoration:none">DESCARCĂ IMAGINEA</a>
+    ${self === top ? `<a class="btn" href="${url}" download="buzz-house.png" style="text-decoration:none">DESCARCĂ IMAGINEA</a>` : ''}
     <button class="btn ghost sm" data-act="close">Închide</button></div>`);
   await waitAct(sheetEl); await closeSheet();
 }
