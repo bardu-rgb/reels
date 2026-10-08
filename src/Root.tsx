@@ -1,9 +1,11 @@
 import React from 'react';
 import {Composition, Folder} from 'remotion';
 import {DayX, calculateDayXMetadata, dayXSchema} from './episodes/DayX';
+import {BUZZ_PROMO_DURATION, BuzzPromo} from './promo/BuzzPromo';
 
 export const RemotionRoot: React.FC = () => {
 	return (
+		<>
 		<Folder name="Series-DayX">
 			<Composition
 				id="Day1"
@@ -29,5 +31,16 @@ export const RemotionRoot: React.FC = () => {
 				}}
 			/>
 		</Folder>
+		<Folder name="Promo">
+			<Composition
+				id="BuzzPromo"
+				component={BuzzPromo}
+				durationInFrames={BUZZ_PROMO_DURATION}
+				fps={30}
+				width={1080}
+				height={1920}
+			/>
+		</Folder>
+		</>
 	);
 };

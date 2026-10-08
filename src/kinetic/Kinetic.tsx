@@ -32,7 +32,7 @@ export const Kinetic: React.FC<{
 	fontSize?: number;
 	color?: string;
 	highlight?: string;
-	font?: 'display' | 'impact' | 'mono';
+	font?: 'display' | 'impact' | 'mono' | 'rounded';
 	strokeWidth?: number;
 	maxWidth?: number;
 	align?: 'center' | 'left';
