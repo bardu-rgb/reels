@@ -1,0 +1,13 @@
+# Shared Orbit
+
+*A visual philosophy*
+
+Shared Orbit holds that the most important thing in a system is the path its parts share, more than any one part. Its images record motion as accumulated evidence: thousands of hairline traces laid one over another until a single form appears that none of them could draw alone. A composition is never a snapshot. It is a long exposure of relationships, a record of where things have been relative to one another, built from patient repetition until the density itself carries the meaning.
+
+Space is organized around an absent center. The eye goes to a point where nothing is drawn, a balance point held only by everything around it. Forms gather in strict rotational and mirrored symmetry, interrupted at deliberate places so the order reads as earned, not mechanical. Vast margins of quiet paper surround the figure like the dark around a star chart. Every curve is computed, never drawn freehand, and every crossing lands with the precision of an instrument. The work must look meticulously crafted, like a plate that took a master engraver months of painstaking attention.
+
+The palette is almost silent: warm archival paper, a deep ink that is nearly black, and a single restrained accent of oxidized vermilion, used sparingly enough that each appearance feels like a discovery. Tone comes from line density and opacity, never from gradients or effects. Where lines gather, the paper darkens the way graphite builds under a careful hand. Where they thin, light returns. Material honesty is absolute: the work should feel printed, inked and pulled, the product of deep expertise in both mathematics and printmaking.
+
+Scale works as a dialogue between the monumental and the microscopic. One large figure dominates. Around it sits an apparatus of tiny clinical marks: registration crosses, tick scales, index numerals, faint coordinate notes, set small as the annotations on a scientific plate from an imaginary discipline. Rhythm comes from equal intervals, the same gap repeated with unwavering consistency, so the viewer feels a steady pulse before understanding it.
+
+Text is rare and set with reverence. A plate number, a figure caption, at most one short sentence that lands like a quiet verdict. Thin serif italics speak and monospaced capitals measure. Nothing explains and nothing crowds. Every letter is positioned with master-level care, aligned to the same invisible grid that governs the lines. The finished object should reward sustained viewing, revealing new structure on the tenth look, and be unmistakably the work of someone at the very top of their field who labored over every hairline.
